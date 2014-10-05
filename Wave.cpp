@@ -19,9 +19,9 @@ float Wave::overlap;
 
 Wave::Wave() {
 	samplerate = 16000;
-	nfft = 512;
 	winlen = 0.025f;
 	framelen = (int)(samplerate * winlen);
+	nfft = (framelen / 2) + 1;
 	overlap = 0.5f;
 	// TODO compute nfft
 

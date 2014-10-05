@@ -11,27 +11,26 @@ using namespace arma;
 
 NoiseEstimator::NoiseEstimator() {
 	unsigned int length = getNfft();
+	eta = 0.7; // smoothing constant
+	gamma = 0.998; // constant
+	beta = 0.8; // constant
+	alpha_p = 0.2; // smoothing constant
+	alpha_d  = 0.85; // constant
 
-	 eta = 0.7; // smoothing constant
-	 gamma = 0.998; // constant
-	 beta = 0.8; // constant
-	 alpha_p = 0.2; // smoothing constant
-	 alpha_d  = 0.85; // constant
+	delta = 2 * ones<vec>(length); // frequency-dependent speech-presence threshold
+	alpha_s = zeros<vec>(length); // (7) time-frequency dependent smoothing factor
 
-	 delta = 2 * ones<vec>(length); // frequency-dependent speech-presence threshold
-	 alpha_s = zeros<vec>(length); // (7) time-frequency dependent smoothing factor
+	noisyRatio = zeros<vec>(length); // (4) power spectrum to local minimum ratio
+	spDecision = zeros<vec>(length); // (5) speech-presence decision
+	spProbability = zeros<vec>(length); // (6) speech-presence probability
 
-	 noisyRatio = zeros<vec>(length); // (4) power spectrum to local minimum ratio
-	 spDecision = zeros<vec>(length); // (5) speech-presence decision
-	 spProbability = zeros<vec>(length); // (6) speech-presence probability
-
-	 int bin1k = (1 * length) / getSamplerate() / 1000; // 16k samplerate 1kbin
-	 int  bin3k = (3 * length) / getSamplerate() / 1000; // 16k samplerate 3k bin
-	 cout << "bin1k: " << bin1k << " bin3k: " << bin3k << endl;
-	 //initialize delta eq(10.5)
-	 for (unsigned int i = bin3k; i < length; i++) {
-	     delta(i) = 5;
-	 }
+	int bin1k = (1 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 1kbin
+	int  bin3k = (3 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 3k bin
+	cout << "bin1k: " << bin1k << " bin3k: " << bin3k << endl;
+	//initialize delta eq(10.5)
+	for (unsigned int i = bin3k; i < length; i++) {
+		delta(i) = 5;
+	}
 }
 
 NoiseEstimator::~NoiseEstimator() {

@@ -5,6 +5,7 @@
 
 #include "WaveProcessor.h"
 #include "NoiseEstimator.h"
+#include "LsaEstimator.h"
 
 using namespace std;
 using namespace arma;
@@ -55,25 +56,26 @@ int main(int argc, char *argv[])
 	waveProcessor.runAnalysis(wave);
 
 	NoiseEstimator noiseEstimator;
+	LsaEstimator lsaEstimator;
 
 	mat spectrum = waveProcessor.getSpectrum();
+	mat clean;
+	clean.copy_size(spectrum);
 	// main-loop
 	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
 		vec powerSpec = square(spectrum.col(i));
         if (i == 0) {
             noiseEstimator.init(powerSpec);
-//            parameters_lsa = initialize_lsa(powerSpec);
         }
         else {
         	noiseEstimator.estimateNoise(powerSpec);
         }
-//        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+        clean.col(i) = lsaEstimator.getCleanSpectrum();
 	}
 
-
-
 	// do the processing
-	// waveProcessor.setSpectrum(spectrum);
+	 waveProcessor.setSpectrum(clean);
 
 	vec out = waveProcessor.runSynthesis();
 

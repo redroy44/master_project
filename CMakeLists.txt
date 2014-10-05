@@ -9,13 +9,15 @@ MESSAGE( STATUS "CMAKE_SOURCE_DIR:         " ${CMAKE_SOURCE_DIR} )
 add_definitions(-g -Wall -std=c++11)
 
 set(SOURCES 
-	Wave.cpp WaveProcessor.cpp NoiseEstimator.cpp
+	Wave.cpp WaveProcessor.cpp NoiseEstimator.cpp LsaEstimator.cpp
 )
 
 set(HEADERS
 	Wave.h 
 	WaveProcessor.h 
 	NoiseEstimator.h
+	LsaEstimator.h
+
 )
 MESSAGE( SOURCES ": " ${SOURCES} )
 MESSAGE( HEADERS ": " ${HEADERS} )
