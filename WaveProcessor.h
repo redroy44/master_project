@@ -17,14 +17,16 @@ public:
 	WaveProcessor(std::string, std::string);
 	virtual ~WaveProcessor();
 
-
-
 	arma::vec readWave(void);
 	void writeWave(arma::vec);
 
 	void runAnalysis(arma::vec);
-	void runSynthesis(arma::mat, arma::mat); // spectrum + angles
+	arma::vec runSynthesis(void);
 
+	arma::mat getAngles(void);
+	void setAngles(arma::mat);
+	arma::mat getSpectrum(void);
+	void setSpectrum(arma::mat);
 
 private:
 	static const int BUFFER_LEN;
@@ -41,12 +43,9 @@ private:
 	arma::mat winFilter(arma::mat, arma::vec);
 
 	arma::mat getPhase(arma::cx_mat);
-	arma::cx_mat getComplex(arma::mat, arma::mat);
+	arma::cx_mat getComplex(arma::mat);
 
 	arma::mat segmentWav(arma::vec);
-	arma::mat overlapAdd(arma::mat, arma::mat);
-
-
 };
 
 #endif /* WAVEPROCESSOR_H_ */

@@ -14,16 +14,24 @@ public:
 	virtual ~Wave();
 	int getNfft();
 	void setNfft(int);
-	int getSamplerate();
+	int getSamplerate(void);
 	void setSamplerate(int);
+	float getOverlap(void);
+	void setOverlap(float);
+	int getFramelen(void);
+	void setFramelen(int);
+	int getChannels(void);
+	void setChannels(int);
+	int getFormat(void);
+	void setFormat(int);
 
+private:
 	static int samplerate;
 	static int nfft;
 	static int format;
 	static int channels;
 	static int framelen; // framelen in frames
-	static int winlen; // framelen in ms
-
+	static float winlen; // framelen in ms
 	static float overlap; // overlap in %
 };
 

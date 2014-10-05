@@ -51,8 +51,17 @@ int main(int argc, char *argv[])
 	cout << "reading wave...\n";
 	vec wave = waveProcessor.readWave();
 
+	waveProcessor.runAnalysis(wave);
+
+
+
+	// do the processing
+	// waveProcessor.setSpectrum(spectrum);
+
+	vec out = waveProcessor.runSynthesis();
+
 	cout << "writing wave...\n";
-	waveProcessor.writeWave(wave);
+	waveProcessor.writeWave(out);
 	cout << "done.\n";
 
 
