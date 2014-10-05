@@ -10,10 +10,12 @@ add_executable(main main.cpp)
 
 set(Boost_INCLUDE_DIRS /usr/include/boost)
 set(Boost_LIBRARY_DIR /usr/lib/x86_64-linux-gnu)
+set(Armadillo_INCLUDE_DIRS /usr/include)
+set(Armadillo_LIBRARY_DIRS "/usr/lib")
 
-#set(Boost_USE_STATIC_LIBS OFF) 
-#set(Boost_USE_MULTITHREADED ON)  
-#set(Boost_USE_STATIC_RUNTIME OFF) 
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
 find_package(Boost 1.54.0 COMPONENTS program_options) 
 
 if(Boost_FOUND)
@@ -22,7 +24,6 @@ if(Boost_FOUND)
     target_link_libraries( main ${Boost_LIBRARIES} )                                                                                                                                                                                                                            
 endif()
 
-set(Armadillo_INCLUDE_DIRS /usr/include)
 include_directories(${Armadillo_INCLUDE_DIRS})
 
 
