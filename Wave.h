@@ -21,8 +21,10 @@ public:
 	static int nfft;
 	static int format;
 	static int channels;
-//	static const int framelen = 30; // framelen in ms
-//	static const int overlap = 50; // overlap in %
+	static int framelen; // framelen in frames
+	static int winlen; // framelen in ms
+
+	static float overlap; // overlap in %
 };
 
 #endif /* WAVE_H_ */

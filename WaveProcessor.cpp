@@ -51,8 +51,12 @@ arma::vec WaveProcessor::readWave(void) {
         wave(i) = buffer[i % BUFFER_LEN];
     }
 
+    // check samplerate
+    if (samplerate != infile.samplerate()) {
+    	cout << "samplerates don't match!!! Exiting."
+    	exit(EXIT_FAILURE);
+    }
     channels = infile.channels();
-    samplerate = infile.samplerate();
     format = infile.format();
 
     return wave;
@@ -68,11 +72,59 @@ void WaveProcessor::writeWave(arma::vec outwave) {
     cout << format << endl;
 
     if (!outfile) {
-        std::cout << "Cannot write to file!" << std::endl;
-        std::exit(EXIT_FAILURE);
+        cout << "Cannot write to file!" << endl;
+        exit(EXIT_FAILURE);
     }
     outfile.write(outwave.colptr(0), outwave.n_elem);
 }
 
-arma::vec WaveProcessor::getHamming(void) {
+vec WaveProcessor::getHamming(void) {
+
+    vec window = ones(framelen);
+
+    for (unsigned int i = 0; i < window.n_rows; i++) {
+        window(i) = 0.54 - 0.46 * cos((2*M_PI*i) / (framelen - 1));
+    }
+
+    return window;
+}
+
+arma::vec WaveProcessor::getHanning(void) {
+    vec window = ones(framelen);
+
+    for (unsigned int i = 0; i < window.n_rows; i++) {
+        window(i) = 0.5 * (1 - cos((2 * M_PI*i) / (framelen - 1)));
+    }
+
+    return window;
+}
+
+arma::mat WaveProcessor::winFilter(arma::mat segments, arma::vec window) {
+	// TODO check segment - window lengths
+	for (unsigned int i = 0; i < segments.n_cols; i++) {
+		segments.col(i) = segments.col(i) % window; // element-wise multiplication
+	}
+	return segments;
+}
+
+void WaveProcessor::runAnalysis(arma::vec wave) {
+	//hamming
+	//segment
+	//filter
+	//fft
+	//half_spec
+	//save angles
+	//done
+}
+
+arma::mat WaveProcessor::getPhase(arma::cx_mat spectrum) {
+    mat angle;
+    angle.copy_size(spectrum);
+
+    for (unsigned int i = 0; i < spectrum.n_rows; i++) {
+        for (unsigned int j = 0; j < spectrum.n_cols; j++) {
+            angle(i, j) = atan2(spectrum(i, j).imag(), spectrum(i, j).real());
+        }
+    }
+    return angle;
 }
