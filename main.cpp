@@ -3,7 +3,10 @@
 #include <armadillo>
 #include <boost/program_options.hpp>
 
+#include "WaveProcessor.h"
+
 using namespace std;
+using namespace arma;
 namespace po = boost::program_options;
 
 po::variables_map parseArgs(int argc, char *argv[])
@@ -42,5 +45,17 @@ int main(int argc, char *argv[])
 	po::variables_map vm = parseArgs(argc, argv);
 
 	cout << "Hello Speech Enhancement" << endl;
+
+	WaveProcessor waveProcessor(vm["inputfile"].as<string>(), vm["outputfile"].as<string>());
+
+	cout << "reading wave...\n";
+	vec wave = waveProcessor.readWave();
+
+	cout << "writing wave...\n";
+	waveProcessor.writeWave(wave);
+	cout << "done.\n";
+
+
+
 	return 0;
 }

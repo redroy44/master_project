@@ -7,28 +7,34 @@
 
 #include "Wave.h"
 
+// define static members
+int Wave::samplerate;
+int Wave::nfft;
+int Wave::format;
+int Wave::channels;
+
 Wave::Wave() {
 	// TODO Auto-generated constructor stub
-
+	samplerate = 16000;
+	nfft = 256;
 }
 
 Wave::~Wave() {
 	// TODO Auto-generated destructor stub
 }
 
-int Wave::getSamplerate() {
-	return this->samplerate;
-}
-
 int Wave::getNfft() {
-	return this->nfft;
+	return nfft;
 }
 
-//int Wave::getFramelen() {
-//	return this->
-//}
+void Wave::setNfft(int nfft) {
+	this->nfft = nfft;
+}
 
-//int Wave::getOverlap() {
-//
-//}
+int Wave::getSamplerate() {
+	return samplerate;
+}
 
+void Wave::setSamplerate(int samplerate) {
+	this->samplerate = samplerate;
+}
