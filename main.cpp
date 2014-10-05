@@ -4,6 +4,7 @@
 #include <boost/program_options.hpp>
 
 #include "WaveProcessor.h"
+#include "NoiseEstimator.h"
 
 using namespace std;
 using namespace arma;
@@ -52,6 +53,22 @@ int main(int argc, char *argv[])
 	vec wave = waveProcessor.readWave();
 
 	waveProcessor.runAnalysis(wave);
+
+	NoiseEstimator noiseEstimator;
+
+	mat spectrum = waveProcessor.getSpectrum();
+	// main-loop
+	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
+		vec powerSpec = square(spectrum.col(i));
+        if (i == 0) {
+            noiseEstimator.init(powerSpec);
+//            parameters_lsa = initialize_lsa(powerSpec);
+        }
+        else {
+        	noiseEstimator.estimateNoise(powerSpec);
+        }
+//        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+	}
 
 
 

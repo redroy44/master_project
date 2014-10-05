@@ -125,6 +125,7 @@ void WaveProcessor::runAnalysis(arma::vec wave) {
 
 	setSpectrum(spec);
 	setAngles(phase);
+	setNfft(spec.n_rows);
 }
 
 arma::mat WaveProcessor::getPhase(arma::cx_mat spectrum) {
