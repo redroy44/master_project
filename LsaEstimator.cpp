@@ -31,7 +31,7 @@ void LsaEstimator::estimateSpec(arma::vec powerSpec, arma::vec powerNoise) {
     spectrum = sqrt(powerSpec);
     noise = sqrt(powerNoise);
 
-    vec SNRposteriori = powerSpec / powerNoise; // A posteriori SNR
+    SNRposteriori = powerSpec / powerNoise; // A posteriori SNR
     vec SNRpriori = snrDD();  // decision-directed A priori SNR
 
     prevSNRposteriori = SNRposteriori; // save A posteriori SNR
