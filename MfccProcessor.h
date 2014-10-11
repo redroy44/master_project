@@ -16,12 +16,25 @@ public:
 	MfccProcessor();
 	virtual ~MfccProcessor();
 
-
+	void computeMfcc(void);
 
 private:
-	arma::vec filterbank;
+	arma::mat filterbank;
+	arma::vec logCoeffs;
+	arma::vec prevVecMfcc;
+	arma::vec vecMfcc;
+
+	// accumulated mfcc matrix
+	arma::mat matMfcc;
+
+
+
 
 	void generateFilterbank(void);
+	void computeLogCoefficients(void);
+	void computeDCT(void);
+	void computeDelta(void);
+	void computeDeltaDelta(void);
 
 
 };
