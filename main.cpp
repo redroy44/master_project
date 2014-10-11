@@ -44,10 +44,8 @@ po::variables_map parseArgs(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	po::variables_map vm = parseArgs(argc, argv);
-
 	cout << "Hello Speech Enhancement" << endl;
-
+	po::variables_map vm = parseArgs(argc, argv);
 	WaveProcessor waveProcessor(vm["inputfile"].as<string>(), vm["outputfile"].as<string>());
 
 	cout << "reading wave...\n";
@@ -61,6 +59,9 @@ int main(int argc, char *argv[])
 	mat spectrum = waveProcessor.getSpectrum();
 	mat clean;
 	clean.copy_size(spectrum);
+
+	mat noiseSpectrum;
+
 	// main-loop
 	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
 		vec powerSpec = square(spectrum.col(i));
@@ -72,18 +73,18 @@ int main(int argc, char *argv[])
         }
         lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
         clean.col(i) = lsaEstimator.getCleanSpectrum();
+
+        noiseSpectrum = join_horiz(noiseSpectrum, sqrt(noiseEstimator.getNoiseSpectrum()));
 	}
 
-	// do the processing
-	 waveProcessor.setSpectrum(clean);
+	clean.save("enhancedSpectrum.dat", raw_ascii);
+
+	waveProcessor.setSpectrum(clean);
 
 	vec out = waveProcessor.runSynthesis();
-
 	cout << "writing wave...\n";
 	waveProcessor.writeWave(out);
 	cout << "done.\n";
-
-
 
 	return 0;
 }
