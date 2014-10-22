@@ -17,7 +17,7 @@ LsaEstimator::LsaEstimator() {
 	int length = getNfft();
 
 	cleanSpectrum = zeros<vec>(length);
-	gain = ones<vec>(length);
+	gain = zeros<vec>(length);
 	prevSNRposteriori = ones<vec>(length);
 	SNRposteriori = ones<vec>(length);
 
@@ -40,11 +40,13 @@ void LsaEstimator::estimateSpec(arma::vec powerSpec, arma::vec powerNoise) {
 
     gain = (SNRpriori / (1 + SNRpriori)) % exp(0.5 * expint(vk)); // log-MMSE gain - equation (20) in log-MMSE
 
-    //for (unsigned int i = 0; i < parameters.gain.n_rows; i++) {
-    //    if (parameters.gain(i) < parameters.gainFloor(i)){
-    //        parameters.gain(i) = parameters.gainFloor(i);
-    //    }
-    //}
+    for (unsigned int i = 0; i < gain.n_rows; i++) {
+        if (gain(i) < 0.001){
+            gain(i) = 0.001;
+        } else if (gain(i) > 1){
+        	gain(i) = 1;
+        }
+    }
 
     cleanSpectrum = gain % spectrum; // lsa-estimate
 }
