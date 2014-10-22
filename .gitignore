@@ -1,5 +1,6 @@
 *~
 build/
+Debug/
 #eclipse project files
 .cproject
 .project
