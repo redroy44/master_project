@@ -60,9 +60,9 @@ int main(int argc, char *argv[])
 	mat clean;
 	clean.copy_size(spectrum);
 
-	mat noiseSpectrum;
-
 	// main-loop
+	cout << "processing wave...\n";
+
 	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
 		vec powerSpec = square(spectrum.col(i));
         if (i == 0) {
@@ -73,11 +73,7 @@ int main(int argc, char *argv[])
         }
         lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
         clean.col(i) = lsaEstimator.getCleanSpectrum();
-
-        noiseSpectrum = join_horiz(noiseSpectrum, sqrt(noiseEstimator.getNoiseSpectrum()));
 	}
-
-	clean.save("enhancedSpectrum.dat", raw_ascii);
 
 	waveProcessor.setSpectrum(clean);
 

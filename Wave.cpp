@@ -24,9 +24,6 @@ Wave::Wave() {
 	framelen = (int)(samplerate * winlen);
 	nfft = (framelen / 2) + 1;
 	overlap = 0.5f;
-	// TODO compute nfft
-
-	std::cout << "framelen: " << framelen << " nfft: " << nfft << std::endl;
 }
 
 Wave::~Wave() {

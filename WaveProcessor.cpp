@@ -34,11 +34,11 @@ arma::vec WaveProcessor::readWave(void) {
         exit(EXIT_FAILURE);
     }
 
-    cout << inWaveFile << endl;
-    cout << infile.channels() << endl;
-    cout << infile.samplerate() << endl;
-    cout << infile.frames() << endl;
-    cout << infile.format() << endl;
+    cout << "Input file name: " << inWaveFile << endl;
+    cout << "Number of channels: " << infile.channels() << endl;
+    cout << "Samplerate: " << infile.samplerate() << endl;
+    cout << "Number of samples: " << infile.frames() << endl;
+    cout << "Format: " << infile.format() << endl;
 
 
     static float buffer[BUFFER_LEN];
@@ -65,11 +65,9 @@ arma::vec WaveProcessor::readWave(void) {
 void WaveProcessor::writeWave(arma::vec outwave) {
     SndfileHandle outfile(outWaveFile, SFM_WRITE, getFormat(), getChannels(), getSamplerate());
 
-    cout << outWaveFile << endl;
-    cout << getChannels() << endl;
-    cout << getSamplerate() << endl;
-    cout << outwave.n_elem << endl;
-    cout << getFormat() << endl;
+    cout << "Output file name: " << outWaveFile << endl;
+    cout << "Number of samples: " << outwave.n_elem << endl;
+
 
     if (!outfile) {
         cout << "Cannot write to file!" << endl;
@@ -116,10 +114,8 @@ void WaveProcessor::runAnalysis(arma::vec wave) {
 	segments = winFilter(segments, window);
 	//fft
 	cx_mat spectrum = fft(segments);
-	cout << "full_spec_length: " << spectrum.n_rows << " "<< spectrum.n_cols << endl;
 	//half_spec
 	mat spec = abs(spectrum.rows(0,(int)(spectrum.n_rows/2))); // take first half of spectrum
-	cout << "half_spec_length: " << spec.n_rows  << " "<< spec.n_cols << endl;
 	//save angles
 	mat phase = getPhase(spectrum); // atan2(x.imag(), x.real());
 
@@ -179,8 +175,6 @@ arma::cx_mat WaveProcessor::getComplex(arma::mat magnitude) {
     spectrum.copy_size(magnitude);
     mat angles = getAngles();
 
-    cout << "rows: " << spectrum.n_rows << " cols: " << spectrum.n_cols << endl;
-
     for (unsigned int i = 0; i < spectrum.n_rows; i++) {
         for (unsigned int j = 0; j < spectrum.n_cols; j++) {
             spectrum(i, j) = std::polar(magnitude(i,j), angles(i,j));
@@ -202,20 +196,11 @@ arma::vec WaveProcessor::runSynthesis() {
     else {
         magnitude = join_vert(magnitude, flipud(magnitude.rows(1, magnitude.n_rows - 2)));
     }
-
-    std::cout << "magnitude: "<< magnitude.n_rows << " " << magnitude.n_cols << std::endl;
-    std::cout << "phase : " << getAngles().n_rows << " " << getAngles().n_cols << std::endl;
-
     cx_mat spectrum = getComplex(magnitude); // retrieve complex spec from polar coordinates
 
-    std::cout << "complex spectrum : " << spectrum.n_rows << " " << spectrum.n_cols << std::endl;
-
     // do the overlap-add reconstruction
-
     int seg_shift = static_cast<int>(length * (1 - overlap)); // (1 - overlap) is the segment shift
     vec output = zeros((spectrum.n_cols - 1)*seg_shift + length);
-
-    std::cout << "overlap-add: " << output.n_elem << std::endl;
 
     for (unsigned int i = 0; i < spectrum.n_cols; i++) {
         int start = i*seg_shift;
