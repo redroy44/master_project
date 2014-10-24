@@ -15,10 +15,10 @@ LsaEstimator::LsaEstimator() {
 	alpha = 0.97;
 
 	gainLower = -60;
-	gainUpper = 0;
+	gainUpper = 6;
 
-	prioriLower = -15;
-	prioriUpper = 15;
+	prioriLower = -40;
+	prioriUpper = 60;
 
 	int length = getNfft();
 
@@ -41,7 +41,7 @@ void LsaEstimator::estimateSpec(arma::vec powerSpec, arma::vec powerNoise) {
     vec SNRpriori = snrDD();  // decision-directed A priori SNR
 
     // constrain a-priori SNR between lower and upper boundary
-    gain = clamp(gain, db2mag(prioriLower), db2mag(prioriUpper));
+    SNRpriori = clamp(SNRpriori, db2mag(prioriLower), db2mag(prioriUpper));
 
     prevSNRposteriori = SNRposteriori; // save A posteriori SNR
 
@@ -51,15 +51,6 @@ void LsaEstimator::estimateSpec(arma::vec powerSpec, arma::vec powerNoise) {
 
     // constrain gain between lower and upper boundary
     gain = clamp(gain, db2mag(gainLower), db2mag(gainUpper));
-
-    // use armadillo clamp function !
-    for (unsigned int i = 0; i < gain.n_rows; i++) {
-        if (gain(i) < 0.001){
-            gain(i) = 0.001;
-        } else if (gain(i) > 1){
-        	gain(i) = 1;
-        }
-    }
 
     cleanSpectrum = gain % spectrum; // lsa-estimate
 
