@@ -73,7 +73,18 @@ int main(int argc, char *argv[])
         }
         lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
         clean.col(i) = lsaEstimator.getCleanSpectrum();
+
+#ifdef DEBUG
+        noiseSpectrum = join_horiz(noiseSpectrum, sqrt(noiseEstimator.getNoiseSpectrum()));
+#endif
 	}
+#ifdef DEBUG
+	clean.save("enhancedSpectrum.dat", raw_ascii);
+	noiseSpectrum.save("noiseEstSpectrum.dat", raw_ascii);
+	lsaEstimator.matGain.save("matGain.dat", raw_ascii);
+	lsaEstimator.matSNRpriori.save("matSNRpriori.dat", raw_ascii);
+	lsaEstimator.matSNRposteriori.save("matSNRposteriori.dat", raw_ascii);
+#endif
 
 	waveProcessor.setSpectrum(clean);
 

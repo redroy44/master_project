@@ -62,6 +62,12 @@ void LsaEstimator::estimateSpec(arma::vec powerSpec, arma::vec powerNoise) {
     }
 
     cleanSpectrum = gain % spectrum; // lsa-estimate
+
+#ifdef DEBUG
+    matGain = join_horiz(matGain, gain);
+    matSNRposteriori = join_horiz(matSNRposteriori, SNRposteriori);
+    matSNRpriori = join_horiz(matSNRpriori, SNRpriori);
+#endif
 }
 
 arma::vec LsaEstimator::snrDD(void) {
