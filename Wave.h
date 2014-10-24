@@ -8,6 +8,8 @@
 #ifndef WAVE_H_
 #define WAVE_H_
 
+#include <armadillo>
+
 class Wave {
 public:
 	Wave();
@@ -24,6 +26,12 @@ public:
 	void setChannels(int);
 	int getFormat(void);
 	void setFormat(int);
+
+	float HzTodB(float);
+	float DbToHz(float);
+
+	arma::vec HzTodB(arma::vec);
+	arma::vec DbToHz(arma::vec);
 
 private:
 	static int samplerate;

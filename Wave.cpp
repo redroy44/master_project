@@ -7,6 +7,7 @@
 
 #include "Wave.h"
 #include <iostream>
+#include <armadillo>
 
 // define static members
 int Wave::samplerate;
@@ -78,4 +79,20 @@ int Wave::getFormat() {
 
 void Wave::setFormat(int format) {
 	this->format = format;
+}
+
+arma::vec Wave::HzTodB(arma::vec vector) {
+	return 20*log10(vector); // matlab mag2db
+}
+
+arma::vec Wave::DbToHz(arma::vec vector) {
+	return exp10(vector/20); // matlab db2mag
+}
+
+float Wave::HzTodB(float freq) {
+	return 20*log10(freq); // matlab mag2db
+}
+
+float Wave::DbToHz(float db) {
+	return exp10(db/20); // matlab db2mag
 }
