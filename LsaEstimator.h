@@ -16,12 +16,19 @@ public:
 	LsaEstimator();
 	virtual ~LsaEstimator();
 
-    double alpha;
-
     void estimateSpec(arma::vec, arma::vec);
 	arma::vec getCleanSpectrum(void);
 
 private:
+	double alpha;
+
+	float gainUpper;	// upper gain boundary in dB
+	float gainLower;	// lower gain boundary in dB
+
+	float prioriUpper;	// upper a-priori SNR boundary in dB
+	float prioriLower;	// lower a-priori SNR boundary in dB
+
+
     arma::vec spectrum;
     arma::vec cleanSpectrum;
     arma::vec noise;

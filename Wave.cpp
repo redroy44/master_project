@@ -81,18 +81,18 @@ void Wave::setFormat(int format) {
 	this->format = format;
 }
 
-arma::vec Wave::HzTodB(arma::vec vector) {
+arma::vec Wave::mag2db(arma::vec vector) {
 	return 20*log10(vector); // matlab mag2db
 }
 
-arma::vec Wave::DbToHz(arma::vec vector) {
+arma::vec Wave::db2mag(arma::vec vector) {
 	return exp10(vector/20); // matlab db2mag
 }
 
-float Wave::HzTodB(float freq) {
+float Wave::mag2db(float freq) {
 	return 20*log10(freq); // matlab mag2db
 }
 
-float Wave::DbToHz(float db) {
+float Wave::db2mag(float db) {
 	return exp10(db/20); // matlab db2mag
 }

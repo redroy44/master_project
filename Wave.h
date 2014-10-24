@@ -27,11 +27,11 @@ public:
 	int getFormat(void);
 	void setFormat(int);
 
-	float HzTodB(float);
-	float DbToHz(float);
+	float mag2db(float);
+	float db2mag(float);
 
-	arma::vec HzTodB(arma::vec);
-	arma::vec DbToHz(arma::vec);
+	arma::vec mag2db(arma::vec);
+	arma::vec db2mag(arma::vec);
 
 private:
 	static int samplerate;
