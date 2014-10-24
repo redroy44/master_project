@@ -3,6 +3,10 @@
 #include <armadillo>
 #include <boost/program_options.hpp>
 
+#ifdef DEBUG
+#include <boost/filesystem.hpp>
+#endif
+
 #include "WaveProcessor.h"
 #include "NoiseEstimator.h"
 #include "LsaEstimator.h"
@@ -60,6 +64,10 @@ int main(int argc, char *argv[])
 	mat clean;
 	clean.copy_size(spectrum);
 
+#ifdef DEBUG
+	mat noiseSpectrum;
+#endif
+
 	// main-loop
 	cout << "processing wave...\n";
 
@@ -79,11 +87,13 @@ int main(int argc, char *argv[])
 #endif
 	}
 #ifdef DEBUG
-	clean.save("enhancedSpectrum.dat", raw_ascii);
-	noiseSpectrum.save("noiseEstSpectrum.dat", raw_ascii);
-	lsaEstimator.matGain.save("matGain.dat", raw_ascii);
-	lsaEstimator.matSNRpriori.save("matSNRpriori.dat", raw_ascii);
-	lsaEstimator.matSNRposteriori.save("matSNRposteriori.dat", raw_ascii);
+	boost::filesystem::path dir("dumps");
+	boost::filesystem::create_directory(dir);
+	clean.save("dumps/enhancedSpectrum.dat", raw_ascii);
+	noiseSpectrum.save("dumps/noiseEstSpectrum.dat", raw_ascii);
+	lsaEstimator.matGain.save("dumps/matGain.dat", raw_ascii);
+	lsaEstimator.matSNRpriori.save("dumps/matSNRpriori.dat", raw_ascii);
+	lsaEstimator.matSNRposteriori.save("dumps/matSNRposteriori.dat", raw_ascii);
 #endif
 
 	waveProcessor.setSpectrum(clean);
