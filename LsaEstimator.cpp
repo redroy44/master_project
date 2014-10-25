@@ -17,7 +17,7 @@ LsaEstimator::LsaEstimator() {
 	gainLower = -60;
 	gainUpper = 6;
 
-	prioriLower = -40;
+	prioriLower = -30;
 	prioriUpper = 60;
 
 	int length = getNfft();

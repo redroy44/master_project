@@ -17,7 +17,7 @@ NoiseEstimator::NoiseEstimator() {
 	alpha_p = 0.2; // smoothing constant
 	alpha_d  = 0.85; // constant
 
-	delta = 2 * ones<vec>(length); // frequency-dependent speech-presence threshold
+	delta = 10 * ones<vec>(length); // frequency-dependent speech-presence threshold
 	alpha_s = zeros<vec>(length); // (7) time-frequency dependent smoothing factor
 
 	noisyRatio = zeros<vec>(length); // (4) power spectrum to local minimum ratio
@@ -25,10 +25,10 @@ NoiseEstimator::NoiseEstimator() {
 	spProbability = zeros<vec>(length); // (6) speech-presence probability
 
 	int bin1k = (1 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 1kbin
-	int  bin3k = (3 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 3k bin
+	int  bin4k = (4 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 4k bin
 	//initialize delta eq(10.5)
-	for (unsigned int i = bin3k; i < length; i++) {
-		delta(i) = 5;
+	for (unsigned int i = bin4k; i < length; i++) {
+		delta(i) = 40;
 	}
 }
 
@@ -60,6 +60,8 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
 
     noisyRatio = smPower / minPower; // eq (4)
 
+
+
     for (unsigned int i = 0; i < spDecision.n_rows; i++) { // begin eq (5)
         if (noisyRatio(i) > delta(i)) {
             spDecision(i) = 1;
@@ -72,6 +74,14 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
     spProbability = alpha_p * spProbability + (1 - alpha_p) * spDecision; // eq (6)
     alpha_s = repmat(alpha_d, alpha_s.n_rows, 1) + (1 - repmat(alpha_d, alpha_s.n_rows, 1)) % spProbability; // eq (7) alpha_d <= alpha_s <= 1
     noiseSpectrum = alpha_s % noiseSpectrum + (1 - alpha_s) % spectrum; // eq (8)
+
+#ifdef DEBUG
+    matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
+    matSpDecision = join_horiz(matSpDecision, spDecision);
+    matSpProbability = join_horiz(matSpProbability, spProbability);
+    matAlpha = join_horiz(matAlpha, alpha_s);
+    matSmPower = join_horiz(matSmPower, smPower);
+#endif
 
     prevSmPower = smPower; // update mcra2 parameters
     prevMinPower = minPower;
