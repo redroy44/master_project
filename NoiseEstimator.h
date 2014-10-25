@@ -20,6 +20,14 @@ public:
 	void estimateNoise(arma::vec);
 	arma::vec getNoiseSpectrum(void);
 
+#ifdef DEBUG
+	arma::mat matNoisyRatio;
+	arma::mat matSpDecision;
+	arma::mat matSpProbability;
+	arma::mat matAlpha;
+	arma::mat matSmPower;
+#endif
+
 private:
     double eta; // smoothing constant
     double gamma; // constant

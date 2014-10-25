@@ -94,11 +94,24 @@ int main(int argc, char *argv[])
 	lsaEstimator.matGain.save("dumps/matGain.dat", raw_ascii);
 	lsaEstimator.matSNRpriori.save("dumps/matSNRpriori.dat", raw_ascii);
 	lsaEstimator.matSNRposteriori.save("dumps/matSNRposteriori.dat", raw_ascii);
+	spectrum.save("dumps/noisySpectrum.dat", raw_ascii);
+	noiseEstimator.matNoisyRatio.save("dumps/noisyRatio.dat", raw_ascii);
+	noiseEstimator.matSpDecision.save("dumps/spDecision.dat", raw_ascii);
+	noiseEstimator.matSpProbability.save("dumps/spProbability.dat", raw_ascii);
+//	noiseEstimator.matAlpha.save("dumps/alpha_s.dat", raw_ascii);
+	noiseEstimator.matSmPower.save("dumps/smPower.dat", raw_ascii);
 
+	// reading clean speech
+	WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/dial_1124389.wav", "true_noise.wav");
+	vec cleanSpeech = cleanProcessor.readWave();
+	cleanProcessor.runAnalysis(cleanSpeech);
+	cleanProcessor.getSpectrum().save("dumps/cleanSpeech.dat", raw_ascii);
+
+	//reading pure noise
 	WaveProcessor noiseProcessor("/home/piotrek/master_testing/adding_noise/noise_segment.wav", "true_noise.wav");
 	vec noise = noiseProcessor.readWave();
 	noiseProcessor.runAnalysis(noise);
-	noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);;
+	noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);
 #endif
 
 	waveProcessor.setSpectrum(clean);

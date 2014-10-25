@@ -116,6 +116,8 @@ void WaveProcessor::runAnalysis(arma::vec wave) {
 	cx_mat spectrum = fft(segments);
 	//half_spec
 	mat spec = abs(spectrum.rows(0,(int)(spectrum.n_rows/2))); // take first half of spectrum
+	// normalize spectrum
+//	spec = normalise(spec);
 	//save angles
 	mat phase = getPhase(spectrum); // atan2(x.imag(), x.real());
 
