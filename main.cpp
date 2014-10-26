@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
 	noiseEstimator.matSpProbability.save("dumps/spProbability.dat", raw_ascii);
 //	noiseEstimator.matAlpha.save("dumps/alpha_s.dat", raw_ascii);
 	noiseEstimator.matSmPower.save("dumps/smPower.dat", raw_ascii);
+	noiseEstimator.matMinPower.save("dumps/minPower.dat", raw_ascii);
 
 	// reading clean speech
 	WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/dial_1124389.wav", "true_noise.wav");
@@ -113,9 +114,8 @@ int main(int argc, char *argv[])
 	noiseProcessor.runAnalysis(noise);
 	noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);
 #endif
-
 	waveProcessor.setSpectrum(clean);
-
+	cout << "Synthesizing wave...\n";
 	vec out = waveProcessor.runSynthesis();
 	cout << "writing wave...\n";
 	waveProcessor.writeWave(out);

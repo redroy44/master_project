@@ -26,6 +26,7 @@ public:
 	arma::mat matSpProbability;
 	arma::mat matAlpha;
 	arma::mat matSmPower;
+	arma::mat matMinPower;
 #endif
 
 private:
