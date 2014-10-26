@@ -10,25 +10,26 @@
 using namespace arma;
 
 NoiseEstimator::NoiseEstimator() {
-	unsigned int length = getNfft();
+	unsigned int length = getNfft()/2;
 	eta = 0.7; // smoothing constant
 	gamma = 0.998; // constant
 	beta = 0.8; // constant
 	alpha_p = 0.2; // smoothing constant
-	alpha_d  = 0.85; // constant
+	alpha_d  = 0.95; // constant
 
-	delta = 10 * ones<vec>(length); // frequency-dependent speech-presence threshold
+	delta = 2 * ones<vec>(length); // frequency-dependent speech-presence threshold
 	alpha_s = zeros<vec>(length); // (7) time-frequency dependent smoothing factor
 
 	noisyRatio = zeros<vec>(length); // (4) power spectrum to local minimum ratio
 	spDecision = zeros<vec>(length); // (5) speech-presence decision
 	spProbability = zeros<vec>(length); // (6) speech-presence probability
 
-	int bin1k = (1 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 1kbin
-	int  bin4k = (4 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 4k bin
+	int bin1k = 2*(1 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 1kbin
+	int  bin3k = 2*(3 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 4k bin
+	std::cout << bin1k << " " << bin3k << endl;
 	//initialize delta eq(10.5)
-	for (unsigned int i = bin4k; i < length; i++) {
-		delta(i) = 40;
+	for (unsigned int i = bin3k; i < length; i++) {
+		delta(i) = 5;
 	}
 }
 
@@ -43,6 +44,14 @@ void NoiseEstimator::init(vec spectrum) {
 	 prevMinPower = spectrum;
 	 minPower = spectrum; // (3) local minimum of noisy speech power spectrum
 	 noiseSpectrum = spectrum; // (8) noise spectrum estimate
+#ifdef DEBUG
+	 matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
+	 matSpDecision = join_horiz(matSpDecision, spDecision);
+	 matSpProbability = join_horiz(matSpProbability, spProbability);
+	 matAlpha = join_horiz(matAlpha, alpha_s);
+	 matSmPower = join_horiz(matSmPower, smPower);
+	 matMinPower = join_horiz(matMinPower, minPower);
+#endif
 }
 
 void NoiseEstimator::estimateNoise(vec spectrum) {
@@ -73,7 +82,7 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
 
     spProbability = alpha_p * spProbability + (1 - alpha_p) * spDecision; // eq (6)
     alpha_s = repmat(alpha_d, alpha_s.n_rows, 1) + (1 - repmat(alpha_d, alpha_s.n_rows, 1)) % spProbability; // eq (7) alpha_d <= alpha_s <= 1
-    noiseSpectrum = alpha_s % noiseSpectrum + (1 - alpha_s) % spectrum; // eq (8)
+    noiseSpectrum = alpha_s % noiseSpectrum + (1 - alpha_s) % smPower; // eq (8) //change from spectrum
 
 #ifdef DEBUG
     matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
@@ -81,6 +90,7 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
     matSpProbability = join_horiz(matSpProbability, spProbability);
     matAlpha = join_horiz(matAlpha, alpha_s);
     matSmPower = join_horiz(matSmPower, smPower);
+    matMinPower = join_horiz(matMinPower, minPower);
 #endif
 
     prevSmPower = smPower; // update mcra2 parameters

@@ -20,9 +20,9 @@ float Wave::overlap;
 
 Wave::Wave() {
 	samplerate = 16000; // the only change needed to 8/16kHz change
-	winlen = 0.025f;
+	winlen = 0.02f;
 	framelen = (int)(samplerate * winlen);
-	nfft = (framelen / 2) + 1;
+	nfft = 2*framelen;
 	overlap = 0.5f;
 }
 

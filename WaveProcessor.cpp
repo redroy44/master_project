@@ -110,12 +110,13 @@ void WaveProcessor::runAnalysis(arma::vec wave) {
 	vec window = getHamming();
 	//segment
 	mat segments = segmentWav(wave);
+	cout << segments.n_rows << " " << segments.n_cols << endl;
 	//filter
 	segments = winFilter(segments, window);
 	//fft
-	cx_mat spectrum = fft(segments);
+	cx_mat spectrum = fft(segments, getNfft());
 	//half_spec
-	mat spec = abs(spectrum.rows(0,(int)(spectrum.n_rows/2))); // take first half of spectrum
+	mat spec = abs(spectrum.rows(0,(int)(spectrum.n_rows/2)-1)); // take first half of spectrum
 	// normalize spectrum
 //	spec = normalise(spec);
 	//save angles
@@ -193,10 +194,10 @@ arma::vec WaveProcessor::runSynthesis() {
 
 	// if number of spectrum bins is odd
     if (length % 2) {
-        magnitude = join_vert(magnitude, flipud(magnitude.rows(1, magnitude.n_rows - 1 )));
+        magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 2)));
     }
-    else {
-        magnitude = join_vert(magnitude, flipud(magnitude.rows(1, magnitude.n_rows - 2)));
+    else { // even
+        magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 1)));
     }
     cx_mat spectrum = getComplex(magnitude); // retrieve complex spec from polar coordinates
 

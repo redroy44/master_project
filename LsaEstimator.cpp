@@ -12,7 +12,7 @@
 using namespace arma;
 
 LsaEstimator::LsaEstimator() {
-	alpha = 0.97;
+	alpha = 0.98;
 
 	gainLower = -60;
 	gainUpper = 6;
@@ -20,7 +20,7 @@ LsaEstimator::LsaEstimator() {
 	prioriLower = -30;
 	prioriUpper = 60;
 
-	int length = getNfft();
+	int length = getNfft()/2;
 
 	cleanSpectrum = zeros<vec>(length);
 	gain = zeros<vec>(length);
