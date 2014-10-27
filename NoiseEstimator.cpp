@@ -17,7 +17,7 @@ NoiseEstimator::NoiseEstimator() {
 	alpha_p = 0.2; // smoothing constant
 	alpha_d  = 0.95; // constant
 
-	delta = 2 * ones<vec>(length); // frequency-dependent speech-presence threshold
+	delta = 5 * ones<vec>(length); // frequency-dependent speech-presence threshold
 	alpha_s = zeros<vec>(length); // (7) time-frequency dependent smoothing factor
 
 	noisyRatio = zeros<vec>(length); // (4) power spectrum to local minimum ratio
@@ -29,7 +29,7 @@ NoiseEstimator::NoiseEstimator() {
 //	std::cout << bin1k << " " << bin3k << endl;
 	//initialize delta eq(10.5)
 	for (unsigned int i = bin3k; i < length; i++) {
-		delta(i) = 5;
+		delta(i) = 30;
 	}
 }
 
