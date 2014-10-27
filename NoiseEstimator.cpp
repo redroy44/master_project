@@ -26,12 +26,13 @@ NoiseEstimator::NoiseEstimator() {
 
 	int bin1k = 2*(1 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 1kbin
 	int  bin3k = 2*(3 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 4k bin
-	std::cout << bin1k << " " << bin3k << endl;
+//	std::cout << bin1k << " " << bin3k << endl;
 	//initialize delta eq(10.5)
 	for (unsigned int i = bin3k; i < length; i++) {
 		delta(i) = 5;
 	}
 }
+
 
 NoiseEstimator::~NoiseEstimator() {
 
