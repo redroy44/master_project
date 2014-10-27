@@ -203,13 +203,26 @@ arma::vec WaveProcessor::runSynthesis() {
 
     // do the overlap-add reconstruction
     int seg_shift = static_cast<int>(length * (1 - overlap)); // (1 - overlap) is the segment shift
-    vec output = zeros((spectrum.n_cols - 1)*seg_shift + length);
+    int len2 = (length-floor(length*overlap));
+//    vec output = zeros((spectrum.n_cols - 1)*(length-(length*overlap)));
 
+//    for (unsigned int i = 0; i < spectrum.n_cols; i++) {
+//        int start = i*seg_shift;
+//        cx_vec spec = spectrum.col(i);
+////        real(ifft(spec, length)).print();
+////        cout << endl;
+//        output.rows(start, start + length - 1) = output.rows(start, start + length - 1) + real(ifft(spec));
+//    }
+
+    vec xfinal = zeros((spectrum.n_cols)*len2);
+    vec x_old = zeros(seg_shift);
     for (unsigned int i = 0; i < spectrum.n_cols; i++) {
         int start = i*seg_shift;
         cx_vec spec = spectrum.col(i);
-        output.rows(start, start + length - 1) = output.rows(start, start + length - 1) + real(ifft(spec, length));
+        vec xi = real(ifft(spec));
+        xfinal.rows(start, start+len2-1)= x_old + xi.rows(0, seg_shift-1);
+        x_old = xi.rows(seg_shift, length-1);
     }
 
-    return output;
+    return xfinal;
 }
