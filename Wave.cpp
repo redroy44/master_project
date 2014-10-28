@@ -9,6 +9,8 @@
 #include <iostream>
 #include <armadillo>
 
+using namespace arma;
+
 // define static members
 int Wave::samplerate;
 int Wave::nfft;
@@ -92,4 +94,24 @@ float Wave::mag2db(float freq) {
 
 float Wave::db2mag(float db) {
 	return exp10(db/20); // matlab db2mag
+}
+
+arma::vec Wave::medFilter(arma::vec frame, int order) {
+    int length = frame.n_elem;
+    int center = order/2;
+    vec medFiltered = zeros<vec>(length);
+    vec window = zeros<vec>(order);
+
+    // expand frame
+    vec exFrame = join_cols(zeros<vec>(center), join_cols(frame, zeros<vec>(center)));
+
+    for (int i = center; i < length; i++) {
+        window.zeros();
+        for ( int j = -center; j < center+1; j++) {
+            window[center+j] = exFrame[i+j];
+        }
+        medFiltered(i-center) = median(window);
+    }
+
+    return medFiltered;
 }
