@@ -48,6 +48,8 @@ po::variables_map parseArgs(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    wall_clock timer;
+    timer.tic();
 	cout << "Hello Speech Enhancement" << endl;
 	po::variables_map vm = parseArgs(argc, argv);
 	WaveProcessor waveProcessor(vm["inputfile"].as<string>(), vm["outputfile"].as<string>());
@@ -120,6 +122,9 @@ int main(int argc, char *argv[])
 	cout << "writing wave...\n";
 	waveProcessor.writeWave(out);
 	cout << "done.\n";
+
+	double n_secs = timer.toc();
+	cout << "took " << n_secs << " seconds" << endl;
 
 	return 0;
 }
