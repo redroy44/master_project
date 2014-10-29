@@ -27,12 +27,6 @@ public:
 	int getFormat(void);
 	void setFormat(int);
 
-	float mag2db(float);
-	float db2mag(float);
-
-	arma::vec mag2db(arma::vec);
-	arma::vec db2mag(arma::vec);
-
 private:
 	static int samplerate;
 	static int nfft;
@@ -41,6 +35,17 @@ private:
 	static int framelen; // framelen in frames
 	static float winlen; // framelen in ms
 	static float overlap; // overlap in %
+
+protected:
+    float mag2db(float);
+    float db2mag(float);
+
+    arma::vec mag2db(arma::vec);
+    arma::vec db2mag(arma::vec);
+
+    arma::vec medFilter(arma::vec, int); // median filter of order n; consistent with matlab medfilt1
+    arma::vec meanFilter(arma::vec, int); // mean filter of order n;
+
 };
 
 #endif /* WAVE_H_ */
