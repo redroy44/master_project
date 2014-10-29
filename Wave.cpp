@@ -118,7 +118,6 @@ arma::vec Wave::medFilter(arma::vec frame, int order) {
 
 arma::vec Wave::meanFilter(arma::vec frame, int order) {
     int length = frame.n_elem;
-    int center = order/2;
     vec window = 1.0/order * ones<vec>(order);
 
     vec filtered = conv(frame, window);
