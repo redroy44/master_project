@@ -40,6 +40,9 @@ protected:
     float mag2db(float);
     float db2mag(float);
 
+    float pow2db(float);
+    float db2pow(float);
+
     arma::vec mag2db(arma::vec);
     arma::vec db2mag(arma::vec);
 
