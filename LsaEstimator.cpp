@@ -41,7 +41,7 @@ void LsaEstimator::estimateSpec(arma::vec powerSpec, arma::vec powerNoise) {
     vec SNRpriori = snrDD();  // decision-directed A priori SNR
 
     // constrain a-priori SNR between lower and upper boundary
-    SNRpriori = clamp(SNRpriori, db2mag(prioriLower), db2mag(prioriUpper));
+    SNRpriori = clamp(SNRpriori, db2pow(prioriLower), db2pow(prioriUpper));
 
     prevSNRposteriori = SNRposteriori; // save A posteriori SNR
 

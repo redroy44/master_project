@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	noiseEstimator.matMinPower.save("dumps/minPower.dat", raw_ascii);
 
 	// reading clean speech
-	WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/dial_1124389.wav", "true_noise.wav");
+	WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/spk2_2.wav", "true_noise.wav");
 	vec cleanSpeech = cleanProcessor.readWave();
 	cleanProcessor.runAnalysis(cleanSpeech);
 	cleanProcessor.getSpectrum().save("dumps/cleanSpeech.dat", raw_ascii);
