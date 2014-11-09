@@ -84,7 +84,7 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
     noiseSpectrum = alpha_s % noiseSpectrum + (1 - alpha_s) % smPower; // eq (8) //change from spectrum
 
     // use mean filter smoothing
-    noiseSpectrum = medFilter(noiseSpectrum, 5);
+//    noiseSpectrum = medFilter(noiseSpectrum, 5);
 //    noiseSpectrum = meanFilter(noiseSpectrum, 5);
 
 #ifdef DEBUG
