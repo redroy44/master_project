@@ -13,9 +13,9 @@ NoiseEstimator::NoiseEstimator() {
 	unsigned int length = getNfft()/2;
 	eta = 0.7; // smoothing constant
 	gamma = 0.998; // constant
-	beta = 0.8; // constant
+	beta = 0.96; // constant
 	alpha_p = 0.2; // smoothing constant - końcówki słów
-	alpha_d  = 0.95; // constant
+	alpha_d  = 0.85; // constant
 
 	delta = 2 * ones<vec>(length); // frequency-dependent speech-presence threshold
 	alpha_s = zeros<vec>(length); // (7) time-frequency dependent smoothing factor
