@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 	cleanProcessor.getSpectrum().save("dumps/cleanSpeech.dat", raw_ascii);
 
 	//reading pure noise
-	WaveProcessor noiseProcessor("/home/piotrek/master_testing/adding_noise/noise_segment.wav", "true_noise.wav");
+	WaveProcessor noiseProcessor("/home/piotrek/master_testing/adding_noise/noise_test.wav", "true_noise.wav");
 	vec noise = noiseProcessor.readWave();
 	noiseProcessor.runAnalysis(noise);
 	noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);
