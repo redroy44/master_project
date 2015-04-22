@@ -27,32 +27,15 @@ MESSAGE( SOURCES ": " ${SOURCES} )
 MESSAGE( HEADERS ": " ${HEADERS} )
 
 include_directories(${CMAKE_SOURCE_DIR})
-link_directories(${CMAKE_SOURCE_DIR})
 
 add_executable(main main.cpp ${SOURCES} ${HEADERS})
-
-set(Boost_INCLUDE_DIRS /usr/include/boost)
-set(Boost_LIBRARY_DIR /usr/lib64)
-set(Armadillo_INCLUDE_DIRS /usr/include)
-set(Armadillo_LIBRARY_DIRS "/usr/lib64/libarmadillo.so")
-set(LibSndFile_LIBRARY_DIRS "/usr/lib64/libsndfile.so.1")
-
 
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.54.0 COMPONENTS program_options filesystem)
+find_package(Boost COMPONENTS program_options filesystem)
 find_package(Armadillo) 
 
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    link_directories(${Boost_LIBRARY_DIR})
-    target_link_libraries( main ${Boost_LIBRARIES} /lib64/libboost_system.so.1.54.0 )                                                                                                                                                                                                                            
-endif()
+target_link_libraries( main armadillo sndfile boost_program_options boost_filesystem)
 
-include_directories(${Armadillo_INCLUDE_DIRS})
-
-
-target_link_libraries( main ${Armadillo_LIBRARY_DIRS} )
-target_link_libraries( main ${LibSndFile_LIBRARY_DIRS} )
 
