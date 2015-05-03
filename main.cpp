@@ -21,7 +21,9 @@ po::variables_map parseArgs(int argc, char *argv[])
 	desc.add_options()
 		("help,h", "Print help messages")
 		("inputfile,i", po::value<string>()->required(), "Input file path")
-		("outputfile,o", po::value<string>()->required(), "Output file path");
+		("outputfile,o", po::value<string>()->required(), "Output file path")
+		("samplerate,s", po::value<int>()->default_value(16), "Inputfile samplerate in kHz")
+		("channels,c", po::value<int>()->default_value(1), "Number of channels");
 
     po::variables_map vm;
 	try {
@@ -50,7 +52,10 @@ int main(int argc, char *argv[])
     timer.tic();
 	cout << "Hello Speech Enhancement" << endl;
 	po::variables_map vm = parseArgs(argc, argv);
-	Wave wave(vm["inputfile"].as<string>(), vm["outputfile"].as<string>());
+	Wave wave(vm["inputfile"].as<string>(), 
+              vm["outputfile"].as<string>(),
+              vm["samplerate"].as<int>(),
+              vm["channels"].as<int>());
 
     wave.read();
     wave.process();

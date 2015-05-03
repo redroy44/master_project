@@ -15,7 +15,7 @@
 
 class Wave {
 public:
-	Wave(const std::string &in, const std::string &out);
+	Wave(const std::string &in, const std::string &out, const int &samplerate, const int &channels);
 	virtual ~Wave();
 
     void read();

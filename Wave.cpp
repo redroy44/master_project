@@ -24,11 +24,11 @@ const int Wave::BUFFER_LEN = 1024;
 //float Wave::winlen;
 //float Wave::overlap;
 
-Wave::Wave(const std::string &in, const std::string &out) {
+Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch) {
     inputfile = in;
     outputfile = out;
-	samplerate = 16000; // the only change needed to 8/16kHz change
-    channels = 1;
+	samplerate = sr*1000; // the only change needed to 8/16kHz change
+    channels = ch;
 	//winlen = 0.02f;
 	//framelen = 256;//(int)(samplerate * winlen);
 	//nfft = framelen;
@@ -51,8 +51,8 @@ void Wave::save() {
 
 void Wave::readWave() {
     SndfileHandle infile = SndfileHandle(inputfile);
-    if (!infile) {
-        throw std::invalid_argument("ERROR Input file with the given name doesn't exist");
+    if (!infile || infile.frames() == 0) {
+        throw std::invalid_argument("ERROR File doesn't exist or is empty");
     } else if (samplerate != infile.samplerate()) { // check samplerate
         throw std::invalid_argument("ERROR Samplerates don't match!");
     } else if (channels != infile.channels()) {
