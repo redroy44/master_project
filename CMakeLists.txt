@@ -18,14 +18,14 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
 
 set(SOURCES
     Wave.cpp
-    #WaveProcessor.cpp
+    WaveProcessor.cpp
     #NoiseEstimator.cpp
     #LsaEstimator.cpp
 )
 
 set(HEADERS
 	Wave.h
-	#WaveProcessor.h
+	WaveProcessor.h
 	#NoiseEstimator.h
 	#LsaEstimator.h
 

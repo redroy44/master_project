@@ -8,7 +8,7 @@
 #ifndef WAVE_H_
 #define WAVE_H_
 
-//#include "WaveProcessor.h"
+#include "WaveProcessor.h"
 #include <armadillo>
 #include <string>
 
@@ -40,7 +40,7 @@ private:
 
     std::string inputfile;
     std::string outputfile;
-    //WaveProcessor waveProcessor;
+    WaveProcessor waveProcessor;
     arma::vec inWave;
     arma::vec outWave;
 

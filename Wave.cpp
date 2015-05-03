@@ -24,7 +24,7 @@ const int Wave::BUFFER_LEN = 1024;
 //float Wave::winlen;
 //float Wave::overlap;
 
-Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch) {
+Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch) : waveProcessor() {
     inputfile = in;
     outputfile = out;
 	samplerate = sr*1000; // the only change needed to 8/16kHz change
@@ -42,6 +42,7 @@ Wave::~Wave() {
 void Wave::read() {
     // process the wave up to FFT
     readWave();
+    waveProcessor.runAnalysis(inWave);
 }
 
 void Wave::process() {
