@@ -20,9 +20,9 @@ po::variables_map parseArgs(int argc, char *argv[])
 	po::options_description desc("Options");
 	desc.add_options()
 		("help", "Print help messages")
-		("inputfile", po::value< string >(), "Input file path")
-		("outputfile", po::value< string >(), "Output file path");
-	
+		("inputfile,i", po::value< string >(), "Input file path")
+		("outputfile,o", po::value< string >(), "Output file path");
+
 	po::variables_map vm;
 	try {
 		po::store(po::parse_command_line(argc, argv, desc),
@@ -105,16 +105,16 @@ int main(int argc, char *argv[])
 	noiseEstimator.matMinPower.save("dumps/minPower.dat", raw_ascii);
 
 	// reading clean speech
-	WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/spk2_2.wav", "true_noise.wav");
-	vec cleanSpeech = cleanProcessor.readWave();
-	cleanProcessor.runAnalysis(cleanSpeech);
-	cleanProcessor.getSpectrum().save("dumps/cleanSpeech.dat", raw_ascii);
+	//WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/spk2_2.wav", "true_noise.wav");
+	//tvec cleanSpeech = cleanProcessor.readWave();
+	//cleanProcessor.runAnalysis(cleanSpeech);
+	//cleanProcessor.getSpectrum().save("dumps/cleanSpeech.dat", raw_ascii);
 
 	//reading pure noise
-	WaveProcessor noiseProcessor("/home/piotrek/master_testing/adding_noise/noise_test.wav", "true_noise.wav");
-	vec noise = noiseProcessor.readWave();
-	noiseProcessor.runAnalysis(noise);
-	noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);
+	//WaveProcessor noiseProcessor("/home/piotrek/master_testing/adding_noise/noise_test.wav", "true_noise.wav");
+	//vec noise = noiseProcessor.readWave();
+	//noiseProcessor.runAnalysis(noise);
+	//noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);
 #endif
 	waveProcessor.setSpectrum(clean);
 	cout << "Synthesizing wave...\n";
