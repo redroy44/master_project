@@ -17,17 +17,17 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
 
 set(SOURCES
-	Wave.cpp
-    WaveProcessor.cpp
-    NoiseEstimator.cpp
-    LsaEstimator.cpp
+    Wave.cpp
+    #WaveProcessor.cpp
+    #NoiseEstimator.cpp
+    #LsaEstimator.cpp
 )
 
 set(HEADERS
 	Wave.h
-	WaveProcessor.h
-	NoiseEstimator.h
-	LsaEstimator.h
+	#WaveProcessor.h
+	#NoiseEstimator.h
+	#LsaEstimator.h
 
 )
 MESSAGE( SOURCES ": " ${SOURCES} )

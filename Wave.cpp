@@ -12,125 +12,136 @@
 using namespace arma;
 
 // define static members
-int Wave::samplerate;
-int Wave::nfft;
-int Wave::format;
-int Wave::channels;
-int Wave::framelen;
-float Wave::winlen;
-float Wave::overlap;
+//int Wave::samplerate;
+//int Wave::nfft;
+//int Wave::format;
+//int Wave::channels;
+//int Wave::framelen;
+//float Wave::winlen;
+//float Wave::overlap;
 
-Wave::Wave() {
-	samplerate = 16000; // the only change needed to 8/16kHz change
-	winlen = 0.02f;
-	framelen = 256;//(int)(samplerate * winlen);
-	nfft = framelen;
-	overlap = 0.75f;
+Wave::Wave(const std::string &in, const std::string &out) {
+    inputfile = in;
+    outputfile = out;
+	//samplerate = 16000; // the only change needed to 8/16kHz change
+	//winlen = 0.02f;
+	//framelen = 256;//(int)(samplerate * winlen);
+	//nfft = framelen;
+	//overlap = 0.75f;
 }
 
 Wave::~Wave() {
 	// TODO Auto-generated destructor stub
 }
 
-int Wave::getNfft() {
-	return nfft;
+void Wave::read() {
 }
 
-void Wave::setNfft(int nfft) {
-	this->nfft = nfft;
+void Wave::process() {
 }
 
-int Wave::getSamplerate() {
-	return samplerate;
+void Wave::save() {
 }
 
-void Wave::setSamplerate(int samplerate) {
-	this->samplerate = samplerate;
-}
+//int Wave::getNfft() {
+	//return nfft;
+//}
 
-float Wave::getOverlap() {
-	return overlap;
-}
+//void Wave::setNfft(int nfft) {
+	//this->nfft = nfft;
+//}
 
-void Wave::setOverlap(float overlap) {
-	this->overlap = overlap;
-}
+//int Wave::getSamplerate() {
+	//return samplerate;
+//}
 
-int Wave::getFramelen() {
-	return framelen;
-}
+//void Wave::setSamplerate(int samplerate) {
+	//this->samplerate = samplerate;
+//}
 
-void Wave::setFramelen(int framelen) {
-	this->framelen = framelen;
-}
+//float Wave::getOverlap() {
+	//return overlap;
+//}
 
-int Wave::getChannels() {
-	return channels;
-}
+//void Wave::setOverlap(float overlap) {
+	//this->overlap = overlap;
+//}
 
-void Wave::setChannels(int channels) {
-	this->channels = channels;
-}
+//int Wave::getFramelen() {
+	//return framelen;
+//}
 
-int Wave::getFormat() {
-	return format;
-}
+//void Wave::setFramelen(int framelen) {
+	//this->framelen = framelen;
+//}
 
-void Wave::setFormat(int format) {
-	this->format = format;
-}
+//int Wave::getChannels() {
+	//return channels;
+//}
 
-arma::vec Wave::mag2db(arma::vec vector) {
-	return 20*log10(vector); // matlab mag2db
-}
+//void Wave::setChannels(int channels) {
+	//this->channels = channels;
+//}
 
-arma::vec Wave::db2mag(arma::vec vector) {
-	return exp10(vector/20); // matlab db2mag
-}
+//int Wave::getFormat() {
+	//return format;
+//}
 
-float Wave::mag2db(float freq) {
-	return 20*log10(freq); // matlab mag2db
-}
+//void Wave::setFormat(int format) {
+	//this->format = format;
+//}
 
-float Wave::db2mag(float db) {
-	return exp10(db/20); // matlab db2mag
-}
+//arma::vec Wave::mag2db(arma::vec vector) {
+	//return 20*log10(vector); // matlab mag2db
+//}
 
-float Wave::pow2db(float freq) {
-    return 10*log10(freq); // matlab mag2db
-}
+//arma::vec Wave::db2mag(arma::vec vector) {
+	//return exp10(vector/20); // matlab db2mag
+//}
 
-float Wave::db2pow(float db) {
-    return exp10(db/10); // matlab db2mag
-}
+//float Wave::mag2db(float freq) {
+	//return 20*log10(freq); // matlab mag2db
+//}
 
-arma::vec Wave::medFilter(arma::vec frame, int order) {
-    int length = frame.n_elem;
-    int center = order/2;
-    vec medFiltered = frame;
-    vec window = zeros<vec>(order);
+//float Wave::db2mag(float db) {
+	//return exp10(db/20); // matlab db2mag
+//}
 
-    // expand frame
-    vec exFrame = join_cols(zeros<vec>(center), join_cols(frame, zeros<vec>(center)));
+//float Wave::pow2db(float freq) {
+    //return 10*log10(freq); // matlab mag2db
+//}
 
-    for (int i = center; i < length-center+1; i++) {
-        window.zeros();
-        for ( int j = -center; j < center+1; j++) {
-            window[center+j] = exFrame[i+j];
-        }
-        medFiltered[i-center] = median(window);
-    }
+//float Wave::db2pow(float db) {
+    //return exp10(db/10); // matlab db2mag
+//}
 
-    return medFiltered;
-}
+//arma::vec Wave::medFilter(arma::vec frame, int order) {
+    //int length = frame.n_elem;
+    //int center = order/2;
+    //vec medFiltered = frame;
+    //vec window = zeros<vec>(order);
 
-arma::vec Wave::meanFilter(arma::vec frame, int order) {
-    int length = frame.n_elem;
-    vec window = 1.0/order * ones<vec>(order);
+    //// expand frame
+    //vec exFrame = join_cols(zeros<vec>(center), join_cols(frame, zeros<vec>(center)));
 
-    vec filtered = conv(frame, window);
+    //for (int i = center; i < length-center+1; i++) {
+        //window.zeros();
+        //for ( int j = -center; j < center+1; j++) {
+            //window[center+j] = exFrame[i+j];
+        //}
+        //medFiltered[i-center] = median(window);
+    //}
 
-    filtered = filtered.rows(0, length-1);
+    //return medFiltered;
+//}
 
-    return filtered;
-}
+//arma::vec Wave::meanFilter(arma::vec frame, int order) {
+    //int length = frame.n_elem;
+    //vec window = 1.0/order * ones<vec>(order);
+
+    //vec filtered = conv(frame, window);
+
+    //filtered = filtered.rows(0, length-1);
+
+    //return filtered;
+//}
