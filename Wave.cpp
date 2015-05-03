@@ -48,6 +48,8 @@ void Wave::process() {
 }
 
 void Wave::save() {
+    outWave = inWave;
+    writeWave();
 }
 
 void Wave::readWave() {

@@ -15,65 +15,11 @@
 using namespace arma;
 using namespace std;
 
-const int WaveProcessor::BUFFER_LEN = 1024;
 
-WaveProcessor::WaveProcessor(string inWaveFile, string outWaveFile) {
-	this->inWaveFile = inWaveFile;
-	this->outWaveFile = outWaveFile;
-}
+WaveProcessor::WaveProcessor(arma::vec wave){};
 
 WaveProcessor::~WaveProcessor() {
 	// TODO Auto-generated destructor stub
-}
-
-arma::vec WaveProcessor::readWave(void) {
-
-    SndfileHandle infile = SndfileHandle(inWaveFile);
-    if (!infile) {
-        cout << "Cannot load the file!" << endl;
-        exit(EXIT_FAILURE);
-    }
-
-    cout << "Input file name: " << inWaveFile << endl;
-    cout << "Number of channels: " << infile.channels() << endl;
-    cout << "Samplerate: " << infile.samplerate() << endl;
-    cout << "Number of samples: " << infile.frames() << endl;
-    cout << "Format: " << infile.format() << endl;
-
-
-    static float buffer[BUFFER_LEN];
-    vec wave = colvec((const arma::uword)infile.frames());
-
-    for (int i = 0; i < infile.frames(); i++) {
-        if ((i % BUFFER_LEN) == 0) {
-            infile.read(buffer, BUFFER_LEN);
-        }
-        wave(i) = buffer[i % BUFFER_LEN];
-    }
-
-    // check samplerate
-    if (getSamplerate() != infile.samplerate()) {
-    	cout << "samplerates don't match!!! Exiting.";
-    	exit(EXIT_FAILURE);
-    }
-    setChannels(infile.channels());
-    setFormat(infile.format());
-
-    return wave;
-}
-
-void WaveProcessor::writeWave(arma::vec outwave) {
-    SndfileHandle outfile(outWaveFile, SFM_WRITE, getFormat(), getChannels(), getSamplerate());
-
-    cout << "Output file name: " << outWaveFile << endl;
-    cout << "Number of samples: " << outwave.n_elem << endl;
-
-
-    if (!outfile) {
-        cout << "Cannot write to file!" << endl;
-        exit(EXIT_FAILURE);
-    }
-    outfile.write(outwave.colptr(0), outwave.n_elem);
 }
 
 vec WaveProcessor::getHamming(void) {
