@@ -23,7 +23,7 @@ po::variables_map parseArgs(int argc, char *argv[])
 		("inputfile, i", po::value<string>()->required(), "Input file path")
 		("outputfile, o", po::value<string>()->required(), "Output file path");
 
-	po::variables_map vm;
+    po::variables_map vm;
 	try {
 		po::store(po::parse_command_line(argc, argv, desc), vm);
 
