@@ -8,8 +8,10 @@
 #ifndef WAVE_H_
 #define WAVE_H_
 
+//#include "WaveProcessor.h"
 #include <armadillo>
 #include <string>
+
 
 class Wave {
 public:
@@ -34,12 +36,18 @@ public:
 	//void setFormat(int);
 
 private:
+	static const int BUFFER_LEN;
+
     std::string inputfile;
     std::string outputfile;
-	//static int samplerate;
+    //WaveProcessor waveProcessor;
+    arma::vec inWave;
+
+    void readWave();
+	int samplerate;
+	int format;
+	int channels;
 	//static int nfft;
-	//static int format;
-	//static int channels;
 	//static int framelen; // framelen in frames
 	//static float winlen; // framelen in ms
 	//static float overlap; // overlap in %

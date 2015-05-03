@@ -6,12 +6,16 @@
  */
 
 #include "Wave.h"
-#include <iostream>
+//#include <iostream>
+#include "sndfile.hh"
 #include <armadillo>
+#include <stdexcept>
 
 using namespace arma;
 
 // define static members
+const int Wave::BUFFER_LEN = 1024;
+
 //int Wave::samplerate;
 //int Wave::nfft;
 //int Wave::format;
@@ -23,7 +27,8 @@ using namespace arma;
 Wave::Wave(const std::string &in, const std::string &out) {
     inputfile = in;
     outputfile = out;
-	//samplerate = 16000; // the only change needed to 8/16kHz change
+	samplerate = 16000; // the only change needed to 8/16kHz change
+    channels = 1;
 	//winlen = 0.02f;
 	//framelen = 256;//(int)(samplerate * winlen);
 	//nfft = framelen;
@@ -35,6 +40,7 @@ Wave::~Wave() {
 }
 
 void Wave::read() {
+    readWave();
 }
 
 void Wave::process() {
@@ -43,6 +49,33 @@ void Wave::process() {
 void Wave::save() {
 }
 
+void Wave::readWave() {
+    SndfileHandle infile = SndfileHandle(inputfile);
+    if (!infile) {
+        throw std::invalid_argument("ERROR Input file with the given name doesn't exist");
+    } else if (samplerate != infile.samplerate()) { // check samplerate
+        throw std::invalid_argument("ERROR Samplerates don't match!");
+    } else if (channels != infile.channels()) {
+        throw std::invalid_argument("ERROR Number of channels don't match");
+    }
+    
+    // TODO set to verbose output
+    cout << "Input file name: " << inputfile << endl;
+    cout << "Number of channels: " << infile.channels() << endl;
+    cout << "Samplerate: " << infile.samplerate() << endl;
+    cout << "Number of samples: " << infile.frames() << endl;
+    cout << "Format: " << infile.format() << endl;
+
+    float buffer[BUFFER_LEN];
+    inWave = colvec((const arma::uword)infile.frames());
+
+    for (int i = 0; i < infile.frames(); i++) {
+        if ((i % BUFFER_LEN) == 0) {
+            infile.read(buffer, BUFFER_LEN);
+        }
+        inWave(i) = buffer[i % BUFFER_LEN];
+    }
+}
 //int Wave::getNfft() {
 	//return nfft;
 //}
