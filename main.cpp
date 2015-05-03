@@ -19,9 +19,9 @@ po::variables_map parseArgs(int argc, char *argv[])
 {
 	po::options_description desc("Options");
 	desc.add_options()
-		("help, h", "Print help messages")
-		("inputfile, i", po::value<string>()->required(), "Input file path")
-		("outputfile, o", po::value<string>()->required(), "Output file path");
+		("help,h", "Print help messages")
+		("inputfile,i", po::value<string>()->required(), "Input file path")
+		("outputfile,o", po::value<string>()->required(), "Output file path");
 
     po::variables_map vm;
 	try {
