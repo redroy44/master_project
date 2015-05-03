@@ -42,8 +42,10 @@ private:
     std::string outputfile;
     //WaveProcessor waveProcessor;
     arma::vec inWave;
+    arma::vec outWave;
 
     void readWave();
+    void writeWave() const;
 	int samplerate;
 	int format;
 	int channels;

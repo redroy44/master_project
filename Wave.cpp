@@ -40,6 +40,7 @@ Wave::~Wave() {
 }
 
 void Wave::read() {
+    // process the wave up to FFT
     readWave();
 }
 
@@ -75,6 +76,19 @@ void Wave::readWave() {
         }
         inWave(i) = buffer[i % BUFFER_LEN];
     }
+    format = infile.format();
+}
+
+void Wave::writeWave() const {
+    SndfileHandle outfile(outputfile, SFM_WRITE, format, channels, samplerate);
+    if (!outfile) {
+        throw std::invalid_argument("Cannot write to file!");
+    }
+
+    cout << "Output file name: " << outputfile << endl;
+    cout << "Number of samples: " << outWave.n_elem << endl;
+
+    outfile.write(outWave.colptr(0), outWave.n_elem);
 }
 //int Wave::getNfft() {
 	//return nfft;
