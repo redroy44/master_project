@@ -19,14 +19,13 @@ po::variables_map parseArgs(int argc, char *argv[])
 {
 	po::options_description desc("Options");
 	desc.add_options()
-		("help", "Print help messages")
-		("inputfile,i", po::value< string >(), "Input file path")
-		("outputfile,o", po::value< string >(), "Output file path");
+		("help,h", "Print help messages")
+		("inputfile,i", po::value<string>()->required(), "Input file path")
+		("outputfile,o", po::value<string>()->required(), "Output file path");
 
 	po::variables_map vm;
 	try {
-		po::store(po::parse_command_line(argc, argv, desc),
-			vm);
+		po::store(po::parse_command_line(argc, argv, desc), vm);
 
 		if (vm.count("help"))
 		{
@@ -34,7 +33,6 @@ po::variables_map parseArgs(int argc, char *argv[])
 				<< desc << std::endl;
 			exit(EXIT_SUCCESS);
 		}
-
 		po::notify(vm);
 	}
 	catch (po::error& e) {
