@@ -17,7 +17,7 @@ public:
 	virtual ~WaveProcessor();
 
     void runAnalysis(arma::vec);
-	//arma::vec runSynthesis(void);
+	void runSynthesis(arma::vec &);
 
 private:
     float winlen;
@@ -37,7 +37,7 @@ private:
 	void winFilter(arma::mat &, const arma::vec &);
 
 	void savePhase(const arma::cx_mat &);
-	//arma::cx_mat getComplex(arma::mat);
+    void getComplex(arma::cx_mat &);
 };
 
 #endif /* WAVEPROCESSOR_H_ */

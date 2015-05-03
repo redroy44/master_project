@@ -49,7 +49,7 @@ void Wave::process() {
 }
 
 void Wave::save() {
-    outWave = inWave;
+    waveProcessor.runSynthesis(outWave);
     writeWave();
 }
 
