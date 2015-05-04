@@ -22,19 +22,6 @@ public:
     void process();
     void save();
 
-	//int getNfft();
-	//void setNfft(int);
-	//int getSamplerate(void);
-	//void setSamplerate(int);
-	//float getOverlap(void);
-	//void setOverlap(float);
-	//int getFramelen(void);
-	//void setFramelen(int);
-	//int getChannels(void);
-	//void setChannels(int);
-	//int getFormat(void);
-	//void setFormat(int);
-
 private:
 	static const int BUFFER_LEN;
 
@@ -44,15 +31,14 @@ private:
     arma::vec inWave;
     arma::vec outWave;
 
+    arma::mat inSpectrum;
+    arma::mat outSpectrum;
+
     void readWave();
     void writeWave() const;
 	int samplerate;
 	int format;
 	int channels;
-	//static int nfft;
-	//static int framelen; // framelen in frames
-	//static float winlen; // framelen in ms
-	//static float overlap; // overlap in %
 
 protected:
     //float mag2db(float);

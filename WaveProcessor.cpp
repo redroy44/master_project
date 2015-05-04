@@ -21,14 +21,14 @@ WaveProcessor::WaveProcessor(){
     framelen = 256; //(int)(samplerate*winlen)
     nfft = framelen;
     overlap = 0.75f;
-    
+
 };
 
 WaveProcessor::~WaveProcessor() {
 	// TODO Auto-generated destructor stub
 }
 
-void WaveProcessor::runAnalysis(const arma::vec &wave) {
+arma::mat WaveProcessor::runAnalysis(const arma::vec &wave) {
 	//hamming
 	getHamming();
 	//segment
@@ -44,6 +44,7 @@ void WaveProcessor::runAnalysis(const arma::vec &wave) {
 	spectrum = abs(cx_spectrum.rows(0,floor((cx_spectrum.n_rows/2)-1))); // take first half of spectrum
 	// normalize spectrum
     //	spec = normalise(spec);
+    return spectrum;
 }
 
 arma::mat WaveProcessor::segmentWav(const arma::vec &wave) {
@@ -104,7 +105,8 @@ void WaveProcessor::getComplex(arma::cx_mat &magnitude) {
     }
 }
 
-void WaveProcessor::runSynthesis(arma::vec &outWave) {
+void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
+    spectrum = spc;
     // if number of spectrum bins is odd
     if (framelen % 2) {
         spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 2)));

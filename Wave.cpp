@@ -7,6 +7,7 @@
 
 #include "Wave.h"
 #include "NoiseEstimator.h"
+#include "LsaEstimator.h"
 #include "sndfile.hh"
 #include <armadillo>
 #include <stdexcept>
@@ -42,31 +43,33 @@ Wave::~Wave() {
 void Wave::read() {
     // process the wave up to FFT
     readWave();
-    waveProcessor.runAnalysis(inWave);
+    inSpectrum = waveProcessor.runAnalysis(inWave);
 }
 
 void Wave::process() {
 	cout << "processing wave...\n";
+    outSpectrum.copy_size(inSpectrum);
 
-	NoiseEstimator noiseEstimator(waveProcessor.getNfft(), samplerate);
-	//LsaEstimator lsaEstimator;
+    NoiseEstimator noiseEstimator(waveProcessor.getNfft(), samplerate);
+    LsaEstimator lsaEstimator(waveProcessor.getNfft());
     // TODO implement an col_iterator
-	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
-		vec powerSpec = square(waveProcessor.getSpectrum().col(i));
+    for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
+        vec powerSpec = square(waveProcessor.getSpectrum().col(i));
         if (i == 0) {
             noiseEstimator.init(powerSpec);
         }
         else {
-        	noiseEstimator.estimateNoise(powerSpec);
+            noiseEstimator.estimateNoise(powerSpec);
         }
-        //lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
-        //clean.col(i) = lsaEstimator.getCleanSpectrum();
+        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+        outSpectrum.col(i) = lsaEstimator.getCleanSpectrum();
 
-	}
+    }
 }
 
 void Wave::save() {
-    waveProcessor.runSynthesis(outWave);
+    std::cout << "saving wave" << std::endl;
+    waveProcessor.runSynthesis(outSpectrum, outWave);
     writeWave();
 }
 
@@ -79,7 +82,7 @@ void Wave::readWave() {
     } else if (channels != infile.channels()) {
         throw std::invalid_argument("ERROR Number of channels don't match");
     }
-    
+
     // TODO set to verbose output
     cout << "Input file name: " << inputfile << endl;
     cout << "Number of channels: " << infile.channels() << endl;
