@@ -11,19 +11,19 @@
 #include <Wave.h>
 #include <armadillo>
 
-class LsaEstimator: public Wave {
+class LsaEstimator {
 public:
-	LsaEstimator();
+	LsaEstimator(const unsigned int &);
 	virtual ~LsaEstimator();
 
-    void estimateSpec(arma::vec, arma::vec);
-	arma::vec getCleanSpectrum(void);
+    void estimateSpec(const arma::vec &, const arma::vec &);
+	arma::vec getCleanSpectrum(void) const;
 
-#ifdef DEBUG
-	arma::mat matGain;
-	arma::mat matSNRposteriori;
-	arma::mat matSNRpriori;
-#endif
+//#ifdef DEBUG
+	//arma::mat matGain;
+	//arma::mat matSNRposteriori;
+	//arma::mat matSNRpriori;
+//#endif
 
 private:
 	double alpha;
@@ -42,8 +42,8 @@ private:
     arma::vec prevSNRposteriori;
     arma::vec SNRposteriori;
 
-    arma::vec snrDD(void);
-    arma::vec expint(arma::vec);
+    void snrDD(arma::vec &);
+    void expint(arma::vec &);
 };
 
 #endif /* LSAESTIMATOR_H_ */

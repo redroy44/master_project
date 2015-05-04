@@ -18,7 +18,7 @@ public:
 
 	void init(const arma::vec &);
 	void estimateNoise(const arma::vec &);
-	const arma::vec & getNoiseSpectrum(void) const;
+	arma::vec getNoiseSpectrum(void) const;
 
 //#ifdef DEBUG
 	//arma::mat matNoisyRatio;

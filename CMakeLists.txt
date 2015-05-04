@@ -20,14 +20,14 @@ set(SOURCES
     Wave.cpp
     WaveProcessor.cpp
     NoiseEstimator.cpp
-    #LsaEstimator.cpp
+    LsaEstimator.cpp
 )
 
 set(HEADERS
-	Wave.h
-	WaveProcessor.h
+    Wave.h
+    WaveProcessor.h
     NoiseEstimator.h
-	#LsaEstimator.h
+    LsaEstimator.h
 
 )
 MESSAGE( SOURCES ": " ${SOURCES} )

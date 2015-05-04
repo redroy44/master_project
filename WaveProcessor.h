@@ -16,8 +16,8 @@ public:
 	WaveProcessor();
 	virtual ~WaveProcessor();
 
-    void runAnalysis(const arma::vec &);
-	void runSynthesis(arma::vec &);
+    arma::mat runAnalysis(const arma::vec &);
+    void runSynthesis(const arma::mat &, arma::vec &);
     const arma::mat & getSpectrum(void) const;
     const unsigned int & getNfft(void) const;
 

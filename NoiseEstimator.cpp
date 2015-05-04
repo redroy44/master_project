@@ -101,7 +101,7 @@ void NoiseEstimator::estimateNoise(const vec &spectrum) {
     prevMinPower = minPower;
 }
 
-const arma::vec & NoiseEstimator::getNoiseSpectrum() const {
+arma::vec NoiseEstimator::getNoiseSpectrum() const {
 	return noiseSpectrum;
 }
 
