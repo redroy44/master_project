@@ -6,7 +6,7 @@
  */
 
 #include "Wave.h"
-//#include <iostream>
+#include "NoiseEstimator.h"
 #include "sndfile.hh"
 #include <armadillo>
 #include <stdexcept>
@@ -46,6 +46,23 @@ void Wave::read() {
 }
 
 void Wave::process() {
+	cout << "processing wave...\n";
+
+	NoiseEstimator noiseEstimator(waveProcessor.getNfft(), samplerate);
+	//LsaEstimator lsaEstimator;
+    // TODO implement an col_iterator
+	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
+		vec powerSpec = square(waveProcessor.getSpectrum().col(i));
+        if (i == 0) {
+            noiseEstimator.init(powerSpec);
+        }
+        else {
+        	noiseEstimator.estimateNoise(powerSpec);
+        }
+        //lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+        //clean.col(i) = lsaEstimator.getCleanSpectrum();
+
+	}
 }
 
 void Wave::save() {

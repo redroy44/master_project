@@ -11,23 +11,23 @@
 #include <Wave.h>
 #include <armadillo>
 
-class NoiseEstimator: public Wave {
+class NoiseEstimator {
 public:
-	NoiseEstimator();
+	NoiseEstimator(const unsigned int &, const unsigned int &);
 	virtual ~NoiseEstimator();
 
-	void init(arma::vec);
-	void estimateNoise(arma::vec);
-	arma::vec getNoiseSpectrum(void);
+	void init(const arma::vec &);
+	void estimateNoise(const arma::vec &);
+	const arma::vec & getNoiseSpectrum(void) const;
 
-#ifdef DEBUG
-	arma::mat matNoisyRatio;
-	arma::mat matSpDecision;
-	arma::mat matSpProbability;
-	arma::mat matAlpha;
-	arma::mat matSmPower;
-	arma::mat matMinPower;
-#endif
+//#ifdef DEBUG
+	//arma::mat matNoisyRatio;
+	//arma::mat matSpDecision;
+	//arma::mat matSpProbability;
+	//arma::mat matAlpha;
+	//arma::mat matSmPower;
+	//arma::mat matMinPower;
+//#endif
 
 private:
     double eta; // smoothing constant
@@ -48,8 +48,6 @@ private:
     arma::vec spProbability; // (6) speech-presence probability
     arma::vec prevNoiseSpectrum;
     arma::vec noiseSpectrum; // (8) noise spectrum estimate
-
-
 };
 
 #endif /* NOISEESTIMATOR_H_ */

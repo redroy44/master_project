@@ -28,7 +28,7 @@ WaveProcessor::~WaveProcessor() {
 	// TODO Auto-generated destructor stub
 }
 
-void WaveProcessor::runAnalysis(arma::vec wave) {
+void WaveProcessor::runAnalysis(const arma::vec &wave) {
 	//hamming
 	getHamming();
 	//segment
@@ -48,14 +48,14 @@ void WaveProcessor::runAnalysis(arma::vec wave) {
 
 arma::mat WaveProcessor::segmentWav(const arma::vec &wave) {
 	// compute number of segments based on seg length and num of audio samples
-	int seg_start = static_cast<int>( framelen * (1 - overlap)); // (1 - overlap) is the segment shift
-	int num_segments = ((wave.n_elem - framelen) / seg_start) + 1;
+	unsigned int seg_start = static_cast<int>( framelen * (1 - overlap)); // (1 - overlap) is the segment shift
+	unsigned int num_segments = ((wave.n_elem - framelen) / seg_start) + 1;
 
 	mat segments = zeros(framelen, num_segments);
 
 	// begin segmentation
-	for (int i = 0; i < framelen; i++) {
-		for (int j = 0; j < num_segments;j++) {
+	for (unsigned int i = 0; i < framelen; i++) {
+		for (unsigned int j = 0; j < num_segments;j++) {
 			segments(i, j) = wave(j*seg_start + i);
 		}
 	}
@@ -134,4 +134,12 @@ void WaveProcessor::runSynthesis(arma::vec &outWave) {
         syn_old = window.rows(seg_shift, framelen-1);
     }
     outWave = xfinal / synthesis;
+}
+
+const arma::mat & WaveProcessor::getSpectrum() const {
+    return spectrum;
+}
+
+const unsigned int & WaveProcessor::getNfft() const {
+    return nfft;
 }

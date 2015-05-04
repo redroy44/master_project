@@ -16,16 +16,18 @@ public:
 	WaveProcessor();
 	virtual ~WaveProcessor();
 
-    void runAnalysis(arma::vec);
+    void runAnalysis(const arma::vec &);
 	void runSynthesis(arma::vec &);
+    const arma::mat & getSpectrum(void) const;
+    const unsigned int & getNfft(void) const;
 
 private:
     float winlen;
-    int framelen;
-    int nfft;
+    unsigned int framelen;
+    unsigned int nfft;
     float overlap;
 
-    arma::mat window;
+    arma::vec window;
     arma::mat spectrum;
     arma::mat angles;
 
