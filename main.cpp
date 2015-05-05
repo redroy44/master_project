@@ -52,13 +52,13 @@ int main(int argc, char *argv[])
     timer.tic();
 	cout << "Hello Speech Enhancement" << endl;
 	po::variables_map vm = parseArgs(argc, argv);
-	Wave wave(vm["inputfile"].as<string>(), 
+	Wave wave(vm["inputfile"].as<string>(),
               vm["outputfile"].as<string>(),
               vm["samplerate"].as<int>(),
               vm["channels"].as<int>());
 
     wave.read();
-    wave.process();
+    //wave.process();
     wave.save();
 	//cout << "reading wave...\n";
 	//vec wave = waveProcessor.readWave();
@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
 	//mat clean;
 	//clean.copy_size(spectrum);
 	// main-loop
-	cout << "processing wave...\n";
 	//for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
 		//vec powerSpec = square(spectrum.col(i));
         //if (i == 0) {

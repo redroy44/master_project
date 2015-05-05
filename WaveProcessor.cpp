@@ -21,6 +21,7 @@ WaveProcessor::WaveProcessor(){
     framelen = 256; //(int)(samplerate*winlen)
     nfft = framelen;
     overlap = 0.75f;
+    window = ones(framelen);
 
 };
 
@@ -64,7 +65,6 @@ arma::mat WaveProcessor::segmentWav(const arma::vec &wave) {
 }
 
 void WaveProcessor::getHamming(void) {
-    window = ones(framelen);
 
     for (unsigned int i = 0; i < window.n_rows; i++) {
         window(i) = 0.54 - 0.46 * cos((2*M_PI*i) / (framelen - 1));
@@ -72,7 +72,6 @@ void WaveProcessor::getHamming(void) {
 }
 
 void WaveProcessor::getHanning(void) {
-    window = ones(framelen);
 
     for (unsigned int i = 0; i < window.n_rows; i++) {
         window(i) = 0.5 * (1 - cos((2 * M_PI*i) / (framelen - 1)));
@@ -96,7 +95,6 @@ void WaveProcessor::savePhase(const arma::cx_mat &spc) {
 }
 
 void WaveProcessor::getComplex(arma::cx_mat &magnitude) {
-    magnitude.copy_size(spectrum);
 
     for (unsigned int i = 0; i < spectrum.n_rows; i++) {
         for (unsigned int j = 0; j < spectrum.n_cols; j++) {
@@ -106,26 +104,27 @@ void WaveProcessor::getComplex(arma::cx_mat &magnitude) {
 }
 
 void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
-    spectrum = spc;
+     mat magnitude = spc;
     // if number of spectrum bins is odd
     if (framelen % 2) {
-        spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 2)));
+        magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 2)));
     }
     else { // even
-        spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 1)));
+        magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 1)));
     }
     cx_mat cx_spectrum;
+    cx_spectrum.copy_size(magnitude);
     getComplex(cx_spectrum); // retrieve complex spec from polar coordinates
 
     // do the overlap-add reconstruction
     int seg_shift = static_cast<int>(framelen * (1 - overlap)); // (1 - overlap) is the segment shift
     int len2 = (framelen-floor(framelen*(1-overlap)));
 
-    vec xfinal = zeros((spectrum.n_cols)*seg_shift+len2);
-    vec synthesis = zeros((spectrum.n_cols)*seg_shift+len2);
+    vec xfinal = zeros((cx_spectrum.n_cols)*seg_shift+len2);
+    vec synthesis = zeros((cx_spectrum.n_cols)*seg_shift+len2);
     vec x_old = zeros(len2);
     vec syn_old = zeros(len2);
-    for (unsigned int i = 0; i < spectrum.n_cols; i++) {
+    for (unsigned int i = 0; i < cx_spectrum.n_cols; i++) {
         int start = i*seg_shift;
         vec xi = real(ifft(cx_spectrum.col(i)));
 

@@ -11,7 +11,7 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 #Sends the -std=c++11 flag to the gcc compiler
 #add_definitions(-g -Wall -std=c++11)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -std=c++11 -fopenmp")
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
