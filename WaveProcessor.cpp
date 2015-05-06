@@ -87,8 +87,8 @@ void WaveProcessor::savePhase(const arma::cx_mat &spc) {
     // TODO optimize this with iterator
     angles.copy_size(spc);
 
-    for (unsigned int i = 0; i < spectrum.n_rows; i++) {
-        for (unsigned int j = 0; j < spectrum.n_cols; j++) {
+    for (unsigned int i = 0; i < spc.n_rows; i++) {
+        for (unsigned int j = 0; j < spc.n_cols; j++) {
             angles(i, j) = atan2(spc(i, j).imag(), spc(i, j).real());
         }
     }
