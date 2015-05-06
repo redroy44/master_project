@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
               vm["channels"].as<int>());
 
     wave.read();
-    //wave.process();
+    wave.process();
     wave.save();
 	//cout << "reading wave...\n";
 	//vec wave = waveProcessor.readWave();
