@@ -104,16 +104,16 @@ void WaveProcessor::getComplex(arma::cx_mat &magnitude) {
 }
 
 void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
-     mat magnitude = spc;
+     spectrum = spc;
     // if number of spectrum bins is odd
     if (framelen % 2) {
-        magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 2)));
+        spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 2)));
     }
     else { // even
-        magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 1)));
+        spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 1)));
     }
     cx_mat cx_spectrum;
-    cx_spectrum.copy_size(magnitude);
+    cx_spectrum.copy_size(spectrum);
     getComplex(cx_spectrum); // retrieve complex spec from polar coordinates
 
     // do the overlap-add reconstruction
