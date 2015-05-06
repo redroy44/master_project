@@ -69,10 +69,7 @@ void Wave::process() {
 
 void Wave::save() {
     std::cout << "saving wave" << std::endl;
-    outSpectrum = inSpectrum;
-    inSpectrum.save("inFFT.dat", raw_ascii);
     waveProcessor.runSynthesis(outSpectrum, outWave);
-    outWave.save("outWave.dat", raw_ascii);
     writeWave();
 }
 

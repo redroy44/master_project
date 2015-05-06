@@ -104,7 +104,7 @@ void WaveProcessor::getComplex(arma::cx_mat &magnitude) {
 }
 
 void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
-     mat magnitude = spectrum = spc;
+     mat magnitude = spc;
     // if number of spectrum bins is odd
     if (framelen % 2) {
         magnitude = join_vert(magnitude, flipud(magnitude.rows(0, magnitude.n_rows - 2)));
