@@ -55,11 +55,11 @@ void LsaEstimator::estimateSpec(const arma::vec &powerSpec, const arma::vec &pow
 
     cleanSpectrum = gain % spectrum; // lsa-estimate
 
-//#ifdef DEBUG
-    //matGain = join_horiz(matGain, gain);
-    //matSNRposteriori = join_horiz(matSNRposteriori, SNRposteriori);
-    //matSNRpriori = join_horiz(matSNRpriori, SNRpriori);
-//#endif
+#ifdef DEBUG
+    matGain = join_horiz(matGain, gain);
+    matSNRposteriori = join_horiz(matSNRposteriori, SNRposteriori);
+    matSNRpriori = join_horiz(matSNRpriori, SNRpriori);
+#endif
 }
 
 void LsaEstimator::snrDD(vec &SNRpriori) {

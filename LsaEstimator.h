@@ -19,11 +19,11 @@ public:
     void estimateSpec(const arma::vec &, const arma::vec &);
 	arma::vec getCleanSpectrum(void) const;
 
-//#ifdef DEBUG
-	//arma::mat matGain;
-	//arma::mat matSNRposteriori;
-	//arma::mat matSNRpriori;
-//#endif
+#ifdef DEBUG
+    arma::mat matGain;
+    arma::mat matSNRposteriori;
+    arma::mat matSNRpriori;
+#endif
 
 private:
 	double alpha;
