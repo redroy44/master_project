@@ -18,16 +18,16 @@ public:
 
 	void init(const arma::vec &);
 	void estimateNoise(const arma::vec &);
-	arma::vec getNoiseSpectrum(void) const;
+	const arma::vec & getNoiseSpectrum(void) const;
 
-//#ifdef DEBUG
-	//arma::mat matNoisyRatio;
-	//arma::mat matSpDecision;
-	//arma::mat matSpProbability;
-	//arma::mat matAlpha;
-	//arma::mat matSmPower;
-	//arma::mat matMinPower;
-//#endif
+#ifdef DEBUG
+    arma::mat matNoisyRatio;
+    arma::mat matSpDecision;
+    arma::mat matSpProbability;
+    arma::mat matAlpha;
+    arma::mat matSmPower;
+    arma::mat matMinPower;
+#endif
 
 private:
     double eta; // smoothing constant

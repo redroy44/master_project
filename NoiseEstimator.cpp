@@ -46,14 +46,14 @@ void NoiseEstimator::init(const vec &spectrum) {
 	 minPower = spectrum; // (3) local minimum of noisy speech power spectrum
 	 noiseSpectrum = spectrum; // (8) noise spectrum estimate
 
-//#ifdef DEBUG
-	 //matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
-	 //matSpDecision = join_horiz(matSpDecision, spDecision);
-	 //matSpProbability = join_horiz(matSpProbability, spProbability);
-	 //matAlpha = join_horiz(matAlpha, alpha_s);
-	 //matSmPower = join_horiz(matSmPower, smPower);
-	 //matMinPower = join_horiz(matMinPower, minPower);
-//#endif
+#ifdef DEBUG
+     matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
+     matSpDecision = join_horiz(matSpDecision, spDecision);
+     matSpProbability = join_horiz(matSpProbability, spProbability);
+     matAlpha = join_horiz(matAlpha, alpha_s);
+     matSmPower = join_horiz(matSmPower, smPower);
+     matMinPower = join_horiz(matMinPower, minPower);
+#endif
 }
 
 void NoiseEstimator::estimateNoise(const vec &spectrum) {
@@ -88,20 +88,20 @@ void NoiseEstimator::estimateNoise(const vec &spectrum) {
 //    noiseSpectrum = medFilter(noiseSpectrum, 5);
 //    noiseSpectrum = meanFilter(noiseSpectrum, 5);
 
-//#ifdef DEBUG
-    //matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
-    //matSpDecision = join_horiz(matSpDecision, spDecision);
-    //matSpProbability = join_horiz(matSpProbability, spProbability);
-    //matAlpha = join_horiz(matAlpha, alpha_s);
-    //matSmPower = join_horiz(matSmPower, smPower);
-    //matMinPower = join_horiz(matMinPower, minPower);
-//#endif
+#ifdef DEBUG
+    matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
+    matSpDecision = join_horiz(matSpDecision, spDecision);
+    matSpProbability = join_horiz(matSpProbability, spProbability);
+    matAlpha = join_horiz(matAlpha, alpha_s);
+    matSmPower = join_horiz(matSmPower, smPower);
+    matMinPower = join_horiz(matMinPower, minPower);
+#endif
 
     prevSmPower = smPower; // update mcra2 parameters
     prevMinPower = minPower;
 }
 
-arma::vec NoiseEstimator::getNoiseSpectrum() const {
+const arma::vec & NoiseEstimator::getNoiseSpectrum() const {
 	return noiseSpectrum;
 }
 
