@@ -60,32 +60,6 @@ int main(int argc, char *argv[])
     wave.read();
     wave.process();
     wave.save();
-	//cout << "reading wave...\n";
-	//vec wave = waveProcessor.readWave();
-	//wave.runAnalysis();
-    //NoiseEstimator noiseEstimator;
-	//LsaEstimator lsaEstimator;
-	//mat spectrum = waveProcessor.getSpectrum();
-	//mat clean;
-	//clean.copy_size(spectrum);
-	// main-loop
-	//for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
-		//vec powerSpec = square(spectrum.col(i));
-        //if (i == 0) {
-            //noiseEstimator.init(powerSpec);
-        //}
-        //else {
-            //noiseEstimator.estimateNoise(powerSpec);
-        //}
-        //lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
-        //clean.col(i) = lsaEstimator.getCleanSpectrum();
-
-	//}
-	//waveProcessor.setSpectrum(clean);
-	//cout << "Synthesizing wave...\n";
-	//vec out = waveProcessor.runSynthesis();
-	//cout << "writing wave...\n";
-	//waveProcessor.writeWave(out);
 	cout << "done.\n";
 	double n_secs = timer.toc();
 	cout << "took " << n_secs << " seconds" << endl;
