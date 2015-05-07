@@ -114,34 +114,3 @@ void Wave::writeWave() const {
 
     outfile.write(outWave.colptr(0), outWave.n_elem);
 }
-
-//arma::vec Wave::medFilter(arma::vec frame, int order) {
-    //int length = frame.n_elem;
-    //int center = order/2;
-    //vec medFiltered = frame;
-    //vec window = zeros<vec>(order);
-
-    //// expand frame
-    //vec exFrame = join_cols(zeros<vec>(center), join_cols(frame, zeros<vec>(center)));
-
-    //for (int i = center; i < length-center+1; i++) {
-        //window.zeros();
-        //for ( int j = -center; j < center+1; j++) {
-            //window[center+j] = exFrame[i+j];
-        //}
-        //medFiltered[i-center] = median(window);
-    //}
-
-    //return medFiltered;
-//}
-
-//arma::vec Wave::meanFilter(arma::vec frame, int order) {
-    //int length = frame.n_elem;
-    //vec window = 1.0/order * ones<vec>(order);
-
-    //vec filtered = conv(frame, window);
-
-    //filtered = filtered.rows(0, length-1);
-
-    //return filtered;
-//}

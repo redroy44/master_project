@@ -39,10 +39,6 @@ private:
 	int samplerate;
 	int format;
 	int channels;
-
-    //arma::vec medFilter(arma::vec, int); // median filter of order n; consistent with matlab medfilt1
-    //arma::vec meanFilter(arma::vec, int); // mean filter of order n;
-
 };
 
 #endif /* WAVE_H_ */
