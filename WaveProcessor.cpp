@@ -120,9 +120,6 @@ void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
     cx_spectrum.copy_size(spectrum);
     getComplex(cx_spectrum); // retrieve complex spec from polar coordinates
 
-     //rectangular synthesis window
-    //getRectangular();
-
     // do the overlap-add reconstruction
     int seg_shift = static_cast<int>(framelen * (1 - overlap)); // (1 - overlap) is the segment shift
     int len2 = (framelen-floor(framelen*(1-overlap)));
@@ -141,8 +138,6 @@ void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
         x_old = xi.rows(seg_shift, framelen-1);
         syn_old = window.rows(seg_shift, framelen-1);
     }
-    xfinal.save("xfinal.dat", raw_ascii);
-    synthesis.save("synthesis.dat", raw_ascii);
     outWave = xfinal / synthesis;
 }
 

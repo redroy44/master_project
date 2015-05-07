@@ -114,53 +114,6 @@ void Wave::writeWave() const {
 
     outfile.write(outWave.colptr(0), outWave.n_elem);
 }
-//int Wave::getNfft() {
-	//return nfft;
-//}
-
-//void Wave::setNfft(int nfft) {
-	//this->nfft = nfft;
-//}
-
-//int Wave::getSamplerate() {
-	//return samplerate;
-//}
-
-//void Wave::setSamplerate(int samplerate) {
-	//this->samplerate = samplerate;
-//}
-
-//float Wave::getOverlap() {
-	//return overlap;
-//}
-
-//void Wave::setOverlap(float overlap) {
-	//this->overlap = overlap;
-//}
-
-//int Wave::getFramelen() {
-	//return framelen;
-//}
-
-//void Wave::setFramelen(int framelen) {
-	//this->framelen = framelen;
-//}
-
-//int Wave::getChannels() {
-	//return channels;
-//}
-
-//void Wave::setChannels(int channels) {
-	//this->channels = channels;
-//}
-
-//int Wave::getFormat() {
-	//return format;
-//}
-
-//void Wave::setFormat(int format) {
-	//this->format = format;
-//}
 
 //arma::vec Wave::mag2db(arma::vec vector) {
 	//return 20*log10(vector); // matlab mag2db

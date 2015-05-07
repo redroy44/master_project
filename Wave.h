@@ -40,7 +40,6 @@ private:
 	int format;
 	int channels;
 
-protected:
     //float mag2db(float);
     //float db2mag(float);
 
