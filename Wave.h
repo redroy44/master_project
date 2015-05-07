@@ -40,15 +40,6 @@ private:
 	int format;
 	int channels;
 
-    //float mag2db(float);
-    //float db2mag(float);
-
-    //float pow2db(float);
-    //float db2pow(float);
-
-    //arma::vec mag2db(arma::vec);
-    //arma::vec db2mag(arma::vec);
-
     //arma::vec medFilter(arma::vec, int); // median filter of order n; consistent with matlab medfilt1
     //arma::vec meanFilter(arma::vec, int); // mean filter of order n;
 

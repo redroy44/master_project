@@ -42,7 +42,7 @@ void LsaEstimator::estimateSpec(const arma::vec &powerSpec, const arma::vec &pow
     snrDD(SNRpriori);  // decision-directed A priori SNR
 
     // constrain a-priori SNR between lower and upper boundary
-    //SNRpriori = clamp(SNRpriori, db2pow(prioriLower), db2pow(prioriUpper));
+    SNRpriori = clamp(SNRpriori, db2pow(prioriLower), db2pow(prioriUpper));
 
     prevSNRposteriori = SNRposteriori; // save A posteriori SNR
 
@@ -51,7 +51,7 @@ void LsaEstimator::estimateSpec(const arma::vec &powerSpec, const arma::vec &pow
     gain = (SNRpriori / (1 + SNRpriori)) % exp(0.5 * vk); // log-MMSE gain - equation (20) in log-MMSE
 
     // constrain gain between lower and upper boundary
-    //gain = clamp(gain, db2mag(gainLower), db2mag(gainUpper));
+    gain = clamp(gain, db2mag(gainLower), db2mag(gainUpper));
 
     cleanSpectrum = gain % spectrum; // lsa-estimate
 

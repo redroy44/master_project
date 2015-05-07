@@ -115,30 +115,6 @@ void Wave::writeWave() const {
     outfile.write(outWave.colptr(0), outWave.n_elem);
 }
 
-//arma::vec Wave::mag2db(arma::vec vector) {
-	//return 20*log10(vector); // matlab mag2db
-//}
-
-//arma::vec Wave::db2mag(arma::vec vector) {
-	//return exp10(vector/20); // matlab db2mag
-//}
-
-//float Wave::mag2db(float freq) {
-	//return 20*log10(freq); // matlab mag2db
-//}
-
-//float Wave::db2mag(float db) {
-	//return exp10(db/20); // matlab db2mag
-//}
-
-//float Wave::pow2db(float freq) {
-    //return 10*log10(freq); // matlab mag2db
-//}
-
-//float Wave::db2pow(float db) {
-    //return exp10(db/10); // matlab db2mag
-//}
-
 //arma::vec Wave::medFilter(arma::vec frame, int order) {
     //int length = frame.n_elem;
     //int center = order/2;
