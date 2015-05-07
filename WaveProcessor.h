@@ -34,6 +34,7 @@ private:
 	//// wave utilities
     void getHamming(void);
     void getHanning(void);
+    void getRectangular(void);
 
     arma::mat segmentWav(const arma::vec &);
 	void winFilter(arma::mat &, const arma::vec &);
