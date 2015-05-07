@@ -72,7 +72,8 @@ arma::vec LsaEstimator::getCleanSpectrum() const {
 }
 
 void LsaEstimator::expint(vec &vector) {
-    for (unsigned int i = 0; i < vector.n_rows; i++) {
-        vector(i) = boost::math::expint(2, vector(i)); // vec(i) cannot be 0
-    }
+    vector.transform([](double val) { return boost::math::expint(2, val); });
+    //for (unsigned int i = 0; i < vector.n_rows; i++) {
+        //vector(i) = boost::math::expint(2, vector(i)); // vec(i) cannot be 0
+    //}
 }
