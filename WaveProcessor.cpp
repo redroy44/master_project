@@ -93,7 +93,7 @@ void WaveProcessor::savePhase(const arma::cx_mat &spc) {
 
     for (unsigned int i = 0; i < spc.n_rows; i++) {
         for (unsigned int j = 0; j < spc.n_cols; j++) {
-            angles(i, j) = atan2(spc(i, j).imag(), spc(i, j).real());
+            angles(i, j) = std::arg(spc(i, j));
         }
     }
 }
