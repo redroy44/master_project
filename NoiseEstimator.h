@@ -52,7 +52,6 @@ private:
     // filter functions
     void medFilter(arma::vec &, const arma::uword); // median filter of order n; consistent with matlab medfilt1
     void meanFilter(arma::vec &, const arma::uword); // mean filter of order n;
-
 };
 
 #endif /* NOISEESTIMATOR_H_ */

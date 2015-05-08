@@ -11,10 +11,8 @@
 
 #define _USE_MATH_DEFINES
 
-
 using namespace arma;
 using namespace std;
-
 
 WaveProcessor::WaveProcessor(){
     winlen = 0.02f;
@@ -22,7 +20,6 @@ WaveProcessor::WaveProcessor(){
     nfft = framelen;
     overlap = 0.75f;
     window = ones(framelen);
-
 };
 
 WaveProcessor::~WaveProcessor() {
@@ -65,14 +62,12 @@ arma::mat WaveProcessor::segmentWav(const arma::vec &wave) {
 }
 
 void WaveProcessor::getHamming(void) {
-
     for (unsigned int i = 0; i < window.n_rows; i++) {
         window(i) = 0.54 - 0.46 * cos((2*M_PI*i) / (framelen - 1));
     }
 }
 
 void WaveProcessor::getHanning(void) {
-
     for (unsigned int i = 0; i < window.n_rows; i++) {
         window(i) = 0.5 * (1 - cos((2 * M_PI*i) / (framelen - 1)));
     }
@@ -99,7 +94,6 @@ void WaveProcessor::savePhase(const arma::cx_mat &spc) {
 }
 
 void WaveProcessor::getComplex(arma::cx_mat &magnitude) {
-
     for (unsigned int i = 0; i < spectrum.n_rows; i++) {
         for (unsigned int j = 0; j < spectrum.n_cols; j++) {
             magnitude(i, j) = std::polar(spectrum(i,j), angles(i,j));

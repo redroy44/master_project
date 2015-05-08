@@ -17,23 +17,11 @@ using namespace arma;
 // define static members
 const int Wave::BUFFER_LEN = 1024;
 
-//int Wave::samplerate;
-//int Wave::nfft;
-//int Wave::format;
-//int Wave::channels;
-//int Wave::framelen;
-//float Wave::winlen;
-//float Wave::overlap;
-
 Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch) : waveProcessor() {
     inputfile = in;
     outputfile = out;
 	samplerate = sr*1000; // the only change needed to 8/16kHz change
     channels = ch;
-	//winlen = 0.02f;
-	//framelen = 256;//(int)(samplerate * winlen);
-	//nfft = framelen;
-	//overlap = 0.75f;
 }
 
 Wave::~Wave() {

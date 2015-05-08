@@ -25,7 +25,7 @@ NoiseEstimator::NoiseEstimator(const unsigned int &nfft, const unsigned int &sr)
 	spProbability = zeros<vec>(length); // (6) speech-presence probability
 
 //	int bin1k = 2*(1 * length) / (sr / 1000.0f); // 16k samplerate 1kbin
-	int  bin3k = 2*(3 * length) / (sr / 1000.0f); // 16k samplerate 3k bin
+	int  bin3k = 2 * (3 * length) / (sr / 1000.0f); // 16k samplerate 3k bin
 
 	//initialize delta eq(10.5)
 	for (unsigned int i = bin3k; i < length; i++) {
@@ -117,9 +117,9 @@ void NoiseEstimator::medFilter(arma::vec & frame, const arma::uword order) {
     for (int i = center; i < length-center+1; i++) {
         window.zeros();
         for ( int j = -center; j < center+1; j++) {
-            window[center+j] = exFrame[i+j];
+            window(center+j) = exFrame(i+j);
         }
-        frame[i-center] = median(window);
+        frame(i-center) = median(window);
     }
 }
 

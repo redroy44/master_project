@@ -24,10 +24,15 @@ public:
 
 private:
 	static const int BUFFER_LEN;
+	int samplerate;
+	int format;
+	int channels;
+
+    WaveProcessor waveProcessor;
 
     std::string inputfile;
     std::string outputfile;
-    WaveProcessor waveProcessor;
+
     arma::vec inWave;
     arma::vec outWave;
 
@@ -36,9 +41,6 @@ private:
 
     void readWave();
     void writeWave() const;
-	int samplerate;
-	int format;
-	int channels;
 };
 
 #endif /* WAVE_H_ */
