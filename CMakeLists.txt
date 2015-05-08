@@ -40,8 +40,8 @@ add_executable(main main.cpp ${SOURCES} ${HEADERS})
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost COMPONENTS program_options filesystem system)
-find_package(Armadillo)
+find_package(Boost COMPONENTS program_options filesystem system REQUIRED)
+find_package(Armadillo REQUIRED)
 
 target_link_libraries( main armadillo sndfile boost_program_options boost_filesystem boost_system)
 
