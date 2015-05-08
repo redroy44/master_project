@@ -6,131 +6,99 @@
  */
 
 #include "Wave.h"
-#include <iostream>
+#include "NoiseEstimator.h"
+#include "LsaEstimator.h"
+#include "sndfile.hh"
 #include <armadillo>
+#include <stdexcept>
 
 using namespace arma;
 
 // define static members
-int Wave::samplerate;
-int Wave::nfft;
-int Wave::format;
-int Wave::channels;
-int Wave::framelen;
-float Wave::winlen;
-float Wave::overlap;
+const int Wave::BUFFER_LEN = 1024;
 
-Wave::Wave() {
-	samplerate = 16000; // the only change needed to 8/16kHz change
-	winlen = 0.02f;
-	framelen = 256;//(int)(samplerate * winlen);
-	nfft = framelen;
-	overlap = 0.75f;
+Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch) : waveProcessor() {
+    inputfile = in;
+    outputfile = out;
+	samplerate = sr*1000; // the only change needed to 8/16kHz change
+    channels = ch;
 }
 
 Wave::~Wave() {
 	// TODO Auto-generated destructor stub
 }
 
-int Wave::getNfft() {
-	return nfft;
+void Wave::read() {
+    // process the wave up to FFT
+    readWave();
+    inSpectrum = waveProcessor.runAnalysis(inWave);
 }
 
-void Wave::setNfft(int nfft) {
-	this->nfft = nfft;
-}
+void Wave::process() {
+	cout << "processing wave...\n";
+    outSpectrum.copy_size(inSpectrum);
 
-int Wave::getSamplerate() {
-	return samplerate;
-}
-
-void Wave::setSamplerate(int samplerate) {
-	this->samplerate = samplerate;
-}
-
-float Wave::getOverlap() {
-	return overlap;
-}
-
-void Wave::setOverlap(float overlap) {
-	this->overlap = overlap;
-}
-
-int Wave::getFramelen() {
-	return framelen;
-}
-
-void Wave::setFramelen(int framelen) {
-	this->framelen = framelen;
-}
-
-int Wave::getChannels() {
-	return channels;
-}
-
-void Wave::setChannels(int channels) {
-	this->channels = channels;
-}
-
-int Wave::getFormat() {
-	return format;
-}
-
-void Wave::setFormat(int format) {
-	this->format = format;
-}
-
-arma::vec Wave::mag2db(arma::vec vector) {
-	return 20*log10(vector); // matlab mag2db
-}
-
-arma::vec Wave::db2mag(arma::vec vector) {
-	return exp10(vector/20); // matlab db2mag
-}
-
-float Wave::mag2db(float freq) {
-	return 20*log10(freq); // matlab mag2db
-}
-
-float Wave::db2mag(float db) {
-	return exp10(db/20); // matlab db2mag
-}
-
-float Wave::pow2db(float freq) {
-    return 10*log10(freq); // matlab mag2db
-}
-
-float Wave::db2pow(float db) {
-    return exp10(db/10); // matlab db2mag
-}
-
-arma::vec Wave::medFilter(arma::vec frame, int order) {
-    int length = frame.n_elem;
-    int center = order/2;
-    vec medFiltered = frame;
-    vec window = zeros<vec>(order);
-
-    // expand frame
-    vec exFrame = join_cols(zeros<vec>(center), join_cols(frame, zeros<vec>(center)));
-
-    for (int i = center; i < length-center+1; i++) {
-        window.zeros();
-        for ( int j = -center; j < center+1; j++) {
-            window[center+j] = exFrame[i+j];
+    NoiseEstimator noiseEstimator(waveProcessor.getNfft(), samplerate);
+    LsaEstimator lsaEstimator(waveProcessor.getNfft());
+    // TODO implement an col_iterator
+    for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
+        vec powerSpec = square(waveProcessor.getSpectrum().col(i));
+        if (i == 0) {
+            noiseEstimator.init(powerSpec);
         }
-        medFiltered[i-center] = median(window);
+        else {
+            noiseEstimator.estimateNoise(powerSpec);
+        }
+        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+        outSpectrum.col(i) = lsaEstimator.getCleanSpectrum();
+
+    }
+}
+
+void Wave::save() {
+    std::cout << "saving wave" << std::endl;
+    //outSpectrum = inSpectrum;
+    waveProcessor.runSynthesis(outSpectrum, outWave);
+    writeWave();
+}
+
+void Wave::readWave() {
+    SndfileHandle infile = SndfileHandle(inputfile);
+    if (!infile || infile.frames() == 0) {
+        throw std::invalid_argument("ERROR File doesn't exist or is empty");
+    } else if (samplerate != infile.samplerate()) { // check samplerate
+        throw std::invalid_argument("ERROR Samplerates don't match!");
+    } else if (channels != infile.channels()) {
+        throw std::invalid_argument("ERROR Number of channels don't match");
     }
 
-    return medFiltered;
+    // TODO set to verbose output
+    cout << "Input file name: " << inputfile << endl;
+    cout << "Number of channels: " << infile.channels() << endl;
+    cout << "Samplerate: " << infile.samplerate() << endl;
+    cout << "Number of samples: " << infile.frames() << endl;
+    cout << "Format: " << infile.format() << endl;
+
+    float buffer[BUFFER_LEN];
+    inWave = colvec((const arma::uword)infile.frames());
+
+    for (int i = 0; i < infile.frames(); i++) {
+        if ((i % BUFFER_LEN) == 0) {
+            infile.read(buffer, BUFFER_LEN);
+        }
+        inWave(i) = buffer[i % BUFFER_LEN];
+    }
+    format = infile.format();
 }
 
-arma::vec Wave::meanFilter(arma::vec frame, int order) {
-    int length = frame.n_elem;
-    vec window = 1.0/order * ones<vec>(order);
+void Wave::writeWave() const {
+    SndfileHandle outfile(outputfile, SFM_WRITE, format, channels, samplerate);
+    if (!outfile) {
+        throw std::invalid_argument("Cannot write to file!");
+    }
 
-    vec filtered = conv(frame, window);
+    cout << "Output file name: " << outputfile << endl;
+    cout << "Number of samples: " << outWave.n_elem << endl;
 
-    filtered = filtered.rows(0, length-1);
-
-    return filtered;
+    outfile.write(outWave.colptr(0), outWave.n_elem);
 }

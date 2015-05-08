@@ -8,44 +8,39 @@
 #ifndef WAVEPROCESSOR_H_
 #define WAVEPROCESSOR_H_
 
-#include "Wave.h"
 #include "sndfile.hh"
 #include <armadillo>
 
-class WaveProcessor: public Wave {
+class WaveProcessor {
 public:
-	WaveProcessor(std::string, std::string);
+	WaveProcessor();
 	virtual ~WaveProcessor();
 
-	arma::vec readWave(void);
-	void writeWave(arma::vec);
-
-	void runAnalysis(arma::vec);
-	arma::vec runSynthesis(void);
-
-	arma::mat getAngles(void);
-	void setAngles(arma::mat);
-	arma::mat getSpectrum(void);
-	void setSpectrum(arma::mat);
+    arma::mat runAnalysis(const arma::vec &);
+    void runSynthesis(const arma::mat &, arma::vec &);
+    const arma::mat & getSpectrum(void) const;
+    const unsigned int & getNfft(void) const;
 
 private:
-	static const int BUFFER_LEN;
-	std::string inWaveFile;
-	std::string outWaveFile;
+    float winlen;
+    unsigned int framelen;
+    unsigned int nfft;
+    float overlap;
 
-	arma::mat spectrum;
-	arma::mat angles;
+    arma::vec window;
+    arma::mat spectrum;
+    arma::mat angles;
 
-	// wave utilities
-	arma::vec getHamming(void);
-	arma::vec getHanning(void);
+	//// wave utilities
+    void getHamming(void);
+    void getHanning(void);
+    void getRectangular(void);
 
-	arma::mat winFilter(arma::mat, arma::vec);
+    arma::mat segmentWav(const arma::vec &);
+	void winFilter(arma::mat &, const arma::vec &);
 
-	arma::mat getPhase(arma::cx_mat);
-	arma::cx_mat getComplex(arma::mat);
-
-	arma::mat segmentWav(arma::vec);
+	void savePhase(const arma::cx_mat &);
+    void getComplex(arma::cx_mat &);
 };
 
 #endif /* WAVEPROCESSOR_H_ */

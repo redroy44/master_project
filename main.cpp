@@ -21,7 +21,9 @@ po::variables_map parseArgs(int argc, char *argv[])
 	desc.add_options()
 		("help,h", "Print help messages")
 		("inputfile,i", po::value<string>()->required(), "Input file path")
-		("outputfile,o", po::value<string>()->required(), "Output file path");
+		("outputfile,o", po::value<string>()->required(), "Output file path")
+		("samplerate,s", po::value<int>()->default_value(16), "Inputfile samplerate in kHz")
+		("channels,c", po::value<int>()->default_value(1), "Number of channels");
 
     po::variables_map vm;
 	try {
@@ -50,79 +52,16 @@ int main(int argc, char *argv[])
     timer.tic();
 	cout << "Hello Speech Enhancement" << endl;
 	po::variables_map vm = parseArgs(argc, argv);
-	WaveProcessor waveProcessor(vm["inputfile"].as<string>(), vm["outputfile"].as<string>());
+	Wave wave(vm["inputfile"].as<string>(),
+              vm["outputfile"].as<string>(),
+              vm["samplerate"].as<int>(),
+              vm["channels"].as<int>());
 
-	cout << "reading wave...\n";
-	vec wave = waveProcessor.readWave();
-
-	waveProcessor.runAnalysis(wave);
-
-	NoiseEstimator noiseEstimator;
-	LsaEstimator lsaEstimator;
-
-	mat spectrum = waveProcessor.getSpectrum();
-	mat clean;
-	clean.copy_size(spectrum);
-
-#ifdef DEBUG
-	mat noiseSpectrum;
-#endif
-
-	// main-loop
-	cout << "processing wave...\n";
-
-	for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
-		vec powerSpec = square(spectrum.col(i));
-        if (i == 0) {
-            noiseEstimator.init(powerSpec);
-        }
-        else {
-        	noiseEstimator.estimateNoise(powerSpec);
-        }
-        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
-        clean.col(i) = lsaEstimator.getCleanSpectrum();
-
-#ifdef DEBUG
-        noiseSpectrum = join_horiz(noiseSpectrum, sqrt(noiseEstimator.getNoiseSpectrum()));
-#endif
-	}
-#ifdef DEBUG
-	boost::filesystem::path dir("dumps");
-	boost::filesystem::create_directory(dir);
-	clean.save("dumps/enhancedSpectrum.dat", raw_ascii);
-	noiseSpectrum.save("dumps/noiseEstSpectrum.dat", raw_ascii);
-	lsaEstimator.matGain.save("dumps/matGain.dat", raw_ascii);
-	lsaEstimator.matSNRpriori.save("dumps/matSNRpriori.dat", raw_ascii);
-	lsaEstimator.matSNRposteriori.save("dumps/matSNRposteriori.dat", raw_ascii);
-	spectrum.save("dumps/noisySpectrum.dat", raw_ascii);
-	noiseEstimator.matNoisyRatio.save("dumps/noisyRatio.dat", raw_ascii);
-	noiseEstimator.matSpDecision.save("dumps/spDecision.dat", raw_ascii);
-	noiseEstimator.matSpProbability.save("dumps/spProbability.dat", raw_ascii);
-//	noiseEstimator.matAlpha.save("dumps/alpha_s.dat", raw_ascii);
-	noiseEstimator.matSmPower.save("dumps/smPower.dat", raw_ascii);
-	noiseEstimator.matMinPower.save("dumps/minPower.dat", raw_ascii);
-
-	// reading clean speech
-	//WaveProcessor cleanProcessor("/home/piotrek/master_testing/adding_noise/spk2_2.wav", "true_noise.wav");
-	//tvec cleanSpeech = cleanProcessor.readWave();
-	//cleanProcessor.runAnalysis(cleanSpeech);
-	//cleanProcessor.getSpectrum().save("dumps/cleanSpeech.dat", raw_ascii);
-
-	//reading pure noise
-	//WaveProcessor noiseProcessor("/home/piotrek/master_testing/adding_noise/noise_test.wav", "true_noise.wav");
-	//vec noise = noiseProcessor.readWave();
-	//noiseProcessor.runAnalysis(noise);
-	//noiseProcessor.getSpectrum().save("dumps/trueNoise.dat", raw_ascii);
-#endif
-	waveProcessor.setSpectrum(clean);
-	cout << "Synthesizing wave...\n";
-	vec out = waveProcessor.runSynthesis();
-	cout << "writing wave...\n";
-	waveProcessor.writeWave(out);
+    wave.read();
+    wave.process();
+    wave.save();
 	cout << "done.\n";
-
 	double n_secs = timer.toc();
 	cout << "took " << n_secs << " seconds" << endl;
-
 	return 0;
 }

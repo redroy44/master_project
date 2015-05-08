@@ -9,8 +9,8 @@
 
 using namespace arma;
 
-NoiseEstimator::NoiseEstimator() {
-	unsigned int length = getNfft()/2;
+NoiseEstimator::NoiseEstimator(const unsigned int &nfft, const unsigned int &sr) {
+	unsigned int length = nfft/2;
 	eta = 0.7; // smoothing constant
 	gamma = 0.998; // constant
 	beta = 0.96; // constant
@@ -24,8 +24,8 @@ NoiseEstimator::NoiseEstimator() {
 	spDecision = zeros<vec>(length); // (5) speech-presence decision
 	spProbability = zeros<vec>(length); // (6) speech-presence probability
 
-//	int bin1k = 2*(1 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 1kbin
-	int  bin3k = 2*(3 * length) / (getSamplerate() / 1000.0f); // 16k samplerate 3k bin
+//	int bin1k = 2*(1 * length) / (sr / 1000.0f); // 16k samplerate 1kbin
+	int  bin3k = 2 * (3 * length) / (sr / 1000.0f); // 16k samplerate 3k bin
 
 	//initialize delta eq(10.5)
 	for (unsigned int i = bin3k; i < length; i++) {
@@ -38,24 +38,25 @@ NoiseEstimator::~NoiseEstimator() {
 
 }
 
-void NoiseEstimator::init(vec spectrum) {
+void NoiseEstimator::init(const vec &spectrum) {
 
 	 prevSmPower = spectrum;
 	 smPower = spectrum; // (2) smoothed noisy speech power spectrum
 	 prevMinPower = spectrum;
 	 minPower = spectrum; // (3) local minimum of noisy speech power spectrum
 	 noiseSpectrum = spectrum; // (8) noise spectrum estimate
+
 #ifdef DEBUG
-	 matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
-	 matSpDecision = join_horiz(matSpDecision, spDecision);
-	 matSpProbability = join_horiz(matSpProbability, spProbability);
-	 matAlpha = join_horiz(matAlpha, alpha_s);
-	 matSmPower = join_horiz(matSmPower, smPower);
-	 matMinPower = join_horiz(matMinPower, minPower);
+     matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
+     matSpDecision = join_horiz(matSpDecision, spDecision);
+     matSpProbability = join_horiz(matSpProbability, spProbability);
+     matAlpha = join_horiz(matAlpha, alpha_s);
+     matSmPower = join_horiz(matSmPower, smPower);
+     matMinPower = join_horiz(matMinPower, minPower);
 #endif
 }
 
-void NoiseEstimator::estimateNoise(vec spectrum) {
+void NoiseEstimator::estimateNoise(const vec &spectrum) {
 	smPower = (eta * prevSmPower) + ((1 - eta) * spectrum); // eq (2)
 
     for (unsigned int i = 0; i < minPower.n_rows; i++) { // begin eq (3)
@@ -84,8 +85,8 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
     noiseSpectrum = alpha_s % noiseSpectrum + (1 - alpha_s) % smPower; // eq (8) //change from spectrum
 
     // use mean filter smoothing
-//    noiseSpectrum = medFilter(noiseSpectrum, 5);
-//    noiseSpectrum = meanFilter(noiseSpectrum, 5);
+    //medFilter(noiseSpectrum, 5);
+    //meanFilter(noiseSpectrum, 5);
 
 #ifdef DEBUG
     matNoisyRatio = join_horiz(matNoisyRatio, noisyRatio);
@@ -100,7 +101,33 @@ void NoiseEstimator::estimateNoise(vec spectrum) {
     prevMinPower = minPower;
 }
 
-arma::vec NoiseEstimator::getNoiseSpectrum() {
+const arma::vec & NoiseEstimator::getNoiseSpectrum() const {
 	return noiseSpectrum;
 }
 
+void NoiseEstimator::medFilter(arma::vec & frame, const arma::uword order) {
+    int length = frame.n_elem;
+    int center = order/2;
+    vec medFiltered = frame;
+    vec window = zeros<vec>(order);
+
+    // expand frame
+    vec exFrame = join_cols(zeros<vec>(center), join_cols(frame, zeros<vec>(center)));
+
+    for (int i = center; i < length-center+1; i++) {
+        window.zeros();
+        for ( int j = -center; j < center+1; j++) {
+            window(center+j) = exFrame(i+j);
+        }
+        frame(i-center) = median(window);
+    }
+}
+
+void NoiseEstimator::meanFilter(arma::vec & frame, const arma::uword order) {
+    int length = frame.n_elem;
+    vec window = 1.0/order * ones<vec>(order);
+
+    frame = conv(frame, window);
+
+    frame = frame.rows(0, length-1);
+}

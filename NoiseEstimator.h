@@ -11,22 +11,22 @@
 #include <Wave.h>
 #include <armadillo>
 
-class NoiseEstimator: public Wave {
+class NoiseEstimator {
 public:
-	NoiseEstimator();
+	NoiseEstimator(const unsigned int &, const unsigned int &);
 	virtual ~NoiseEstimator();
 
-	void init(arma::vec);
-	void estimateNoise(arma::vec);
-	arma::vec getNoiseSpectrum(void);
+	void init(const arma::vec &);
+	void estimateNoise(const arma::vec &);
+	const arma::vec & getNoiseSpectrum(void) const;
 
 #ifdef DEBUG
-	arma::mat matNoisyRatio;
-	arma::mat matSpDecision;
-	arma::mat matSpProbability;
-	arma::mat matAlpha;
-	arma::mat matSmPower;
-	arma::mat matMinPower;
+    arma::mat matNoisyRatio;
+    arma::mat matSpDecision;
+    arma::mat matSpProbability;
+    arma::mat matAlpha;
+    arma::mat matSmPower;
+    arma::mat matMinPower;
 #endif
 
 private:
@@ -49,7 +49,9 @@ private:
     arma::vec prevNoiseSpectrum;
     arma::vec noiseSpectrum; // (8) noise spectrum estimate
 
-
+    // filter functions
+    void medFilter(arma::vec &, const arma::uword); // median filter of order n; consistent with matlab medfilt1
+    void meanFilter(arma::vec &, const arma::uword); // mean filter of order n;
 };
 
 #endif /* NOISEESTIMATOR_H_ */
