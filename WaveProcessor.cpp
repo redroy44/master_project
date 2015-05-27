@@ -27,38 +27,64 @@ WaveProcessor::~WaveProcessor() {
 }
 
 arma::mat WaveProcessor::runAnalysis(const arma::vec &wave) {
-	//hamming
-	getHamming();
-	//segment
-	mat segments = segmentWav(wave);
-	cout << segments.n_rows << " " << segments.n_cols << endl;
-	//filter
-	winFilter(segments, window);
-	//fft
-	cx_mat cx_spectrum = fft(segments, nfft);
-	//save angles
-	savePhase(cx_spectrum); // atan2(x.imag(), x.real());
-	//half_spec
-	spectrum = abs(cx_spectrum.rows(0,floor((cx_spectrum.n_rows/2)-1))); // take first half of spectrum
-	// normalize spectrum
+    //hamming
+    getHamming();
+    //segment
+    mat segments = segmentWav2(wave);
+    cout << segments.n_rows << " " << segments.n_cols << endl;
+    //filter
+    winFilter(segments, window);
+    //fft
+    cx_mat cx_spectrum = fft(segments, nfft);
+    //save angles
+    savePhase(cx_spectrum); // atan2(x.imag(), x.real());
+    //half_spec
+    spectrum = abs(cx_spectrum.rows(0,floor((cx_spectrum.n_rows/2)-1))); // take first half of spectrum
+    // normalize spectrum
     //	spec = normalise(spec);
     return spectrum;
 }
 
 arma::mat WaveProcessor::segmentWav(const arma::vec &wave) {
-	// compute number of segments based on seg length and num of audio samples
-	unsigned int seg_start = static_cast<int>( framelen * (1 - overlap)); // (1 - overlap) is the segment shift
-	unsigned int num_segments = ((wave.n_elem - framelen) / seg_start) + 1;
+    // compute number of segments based on seg length and num of audio samples
+    unsigned int seg_start = static_cast<int>( framelen * (1 - overlap)); // (1 - overlap) is the segment shift
+    unsigned int num_segments = ((wave.n_elem - framelen) / seg_start) + 1;
 
-	mat segments = zeros(framelen, num_segments);
+    mat segments = zeros(framelen, num_segments);
 
-	// begin segmentation
-	for (unsigned int i = 0; i < framelen; i++) {
-		for (unsigned int j = 0; j < num_segments;j++) {
-			segments(i, j) = wave(j*seg_start + i);
-		}
-	}
-	return segments;
+    // begin segmentation
+    for (unsigned int i = 0; i < framelen; i++) {
+        for (unsigned int j = 0; j < num_segments;j++) {
+            segments(i, j) = wave(j*seg_start + i);
+        }
+    }
+    return segments;
+}
+
+arma::mat WaveProcessor::segmentWav2(const arma::vec &wave) {
+
+    // unsigned int num_segments = ((wave.n_elem - framelen) / seg_start) + 1;
+    //temporary WA
+    unsigned int frame_step = (framelen * (1 - overlap)); // (1 - overlap) is the segment shift
+    //std::cout << frame_step << std::endl;
+    unsigned int num_segments = 2 + (wave.n_elem - framelen)/frame_step;
+    unsigned int padded_len = (num_segments-1)*frame_step + framelen;
+
+    vec padded_wave = join_cols(wave, zeros<vec>(padded_len-wave.n_elem))
+    mat indices = zeros(framelen, num_segments);
+
+    std::cout << "num segments " << num_segments << std::endl;
+    std::cout << "padded len " << padded_len << std::endl;
+
+    indices = repmat(linspace<vec>(0, framelen - 1, framelen), 1, num_segments)
+    + repmat(linspace<rowvec>(0, padded_len-framelen, num_segments), framelen, 1);
+
+    std::cout << indices(0,0) << " " << indices(indices.n_rows-1, indices.n_cols-1) << std::endl;
+
+    for (mat::iterator i = indices.begin(); i!=indices.end(); ++i) {
+        *i = padded_wave(*i);
+    }
+    return indices;
 }
 
 void WaveProcessor::getHamming(void) {

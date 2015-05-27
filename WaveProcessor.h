@@ -13,8 +13,8 @@
 
 class WaveProcessor {
 public:
-	WaveProcessor();
-	virtual ~WaveProcessor();
+    WaveProcessor();
+    virtual ~WaveProcessor();
 
     arma::mat runAnalysis(const arma::vec &);
     void runSynthesis(const arma::mat &, arma::vec &);
@@ -31,15 +31,16 @@ private:
     arma::mat spectrum;
     arma::mat angles;
 
-	//// wave utilities
+    //// wave utilities
     void getHamming(void);
     void getHanning(void);
     void getRectangular(void);
 
     arma::mat segmentWav(const arma::vec &);
-	void winFilter(arma::mat &, const arma::vec &);
+    arma::mat segmentWav2(const arma::vec &);
+    void winFilter(arma::mat &, const arma::vec &);
 
-	void savePhase(const arma::cx_mat &);
+    void savePhase(const arma::cx_mat &);
     void getComplex(arma::cx_mat &);
 };
 
