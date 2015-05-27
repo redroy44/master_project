@@ -58,7 +58,7 @@ void Wave::process() {
 void Wave::save() {
     std::cout << "saving wave" << std::endl;
     //outSpectrum = inSpectrum;
-    waveProcessor.runSynthesis(outSpectrum, outWave);
+    waveProcessor.runSynthesis2(outSpectrum, outWave);
     writeWave();
 }
 

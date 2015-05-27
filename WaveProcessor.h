@@ -18,6 +18,7 @@ public:
 
     arma::mat runAnalysis(const arma::vec &);
     void runSynthesis(const arma::mat &, arma::vec &);
+    void runSynthesis2(const arma::mat &, arma::vec &);
     const arma::mat & getSpectrum(void) const;
     const unsigned int & getNfft(void) const;
 

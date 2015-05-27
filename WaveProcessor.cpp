@@ -70,7 +70,7 @@ arma::mat WaveProcessor::segmentWav2(const arma::vec &wave) {
     unsigned int num_segments = 2 + (wave.n_elem - framelen)/frame_step;
     unsigned int padded_len = (num_segments-1)*frame_step + framelen;
 
-    vec padded_wave = join_cols(wave, zeros<vec>(padded_len-wave.n_elem))
+    vec padded_wave = join_cols(wave, zeros<vec>(padded_len-wave.n_elem));
     mat indices = zeros(framelen, num_segments);
 
     std::cout << "num segments " << num_segments << std::endl;
@@ -80,7 +80,7 @@ arma::mat WaveProcessor::segmentWav2(const arma::vec &wave) {
     + repmat(linspace<rowvec>(0, padded_len-framelen, num_segments), framelen, 1);
 
     std::cout << indices(0,0) << " " << indices(indices.n_rows-1, indices.n_cols-1) << std::endl;
-
+    // TODO Use .transform() function
     for (mat::iterator i = indices.begin(); i!=indices.end(); ++i) {
         *i = padded_wave(*i);
     }
@@ -140,6 +140,8 @@ void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
     cx_spectrum.copy_size(spectrum);
     getComplex(cx_spectrum); // retrieve complex spec from polar coordinates
 
+
+
     // do the overlap-add reconstruction
     int seg_shift = static_cast<int>(framelen * (1 - overlap)); // (1 - overlap) is the segment shift
     int len2 = (framelen-floor(framelen*(1-overlap)));
@@ -159,6 +161,41 @@ void WaveProcessor::runSynthesis(const arma::mat &spc, arma::vec &outWave) {
         syn_old = window.rows(seg_shift, framelen-1);
     }
     outWave = xfinal / synthesis;
+}
+
+void WaveProcessor::runSynthesis2(const arma::mat &spc, arma::vec &outWave) {
+     spectrum = spc;
+    // if number of spectrum bins is odd
+    if (framelen % 2) {
+        spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 2)));
+    }
+    else { // even
+        spectrum = join_vert(spectrum, flipud(spectrum.rows(0, spectrum.n_rows - 1)));
+    }
+    cx_mat cx_spectrum;
+    cx_spectrum.copy_size(spectrum);
+    getComplex(cx_spectrum); // retrieve complex spec from polar coordinates
+
+    unsigned int frame_step = (framelen * (1 - overlap)); // (1 - overlap) is the segment shift
+    //std::cout << frame_step << std::endl;
+    unsigned int num_segments = cx_spectrum.n_cols;
+    unsigned int padded_len = (num_segments-1)*frame_step + framelen;
+
+    umat indices = repmat(linspace<uvec>(0, framelen - 1, framelen), 1, num_segments)
+    + repmat(linspace<urowvec>(0, padded_len-framelen, num_segments), framelen, 1);
+
+    // do the overlap-add reconstruction
+    vec signal = zeros<vec>(padded_len);
+    vec correction = zeros<vec>(padded_len);
+
+    for (unsigned int i = 0; i < cx_spectrum.n_cols; i++) {
+        correction.rows(indices.col(i)) = correction.rows(indices.col(i)) + window;
+
+        signal.rows(indices.col(i)) = signal.rows(indices.col(i)) + real(ifft(cx_spectrum.col(i)));
+
+    }
+    outWave = signal / correction;
+    //outWave = outWave.rows(0, wave.n_elem);
 }
 
 const arma::mat & WaveProcessor::getSpectrum() const {
