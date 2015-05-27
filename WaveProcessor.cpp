@@ -27,6 +27,7 @@ WaveProcessor::~WaveProcessor() {
 }
 
 arma::mat WaveProcessor::runAnalysis(const arma::vec &wave) {
+    original_len = wave.n_elem;
     //hamming
     getHamming();
     //segment
@@ -65,10 +66,10 @@ arma::mat WaveProcessor::segmentWav2(const arma::vec &wave) {
 
     // unsigned int num_segments = ((wave.n_elem - framelen) / seg_start) + 1;
     //temporary WA
-    unsigned int frame_step = (framelen * (1 - overlap)); // (1 - overlap) is the segment shift
+    frame_step = (framelen * (1 - overlap)); // (1 - overlap) is the segment shift
     //std::cout << frame_step << std::endl;
-    unsigned int num_segments = 2 + (wave.n_elem - framelen)/frame_step;
-    unsigned int padded_len = (num_segments-1)*frame_step + framelen;
+    num_segments = 2 + (wave.n_elem - framelen)/frame_step;
+    padded_len = (num_segments-1)*frame_step + framelen;
 
     vec padded_wave = join_cols(wave, zeros<vec>(padded_len-wave.n_elem));
     mat indices = zeros(framelen, num_segments);
@@ -176,11 +177,6 @@ void WaveProcessor::runSynthesis2(const arma::mat &spc, arma::vec &outWave) {
     cx_spectrum.copy_size(spectrum);
     getComplex(cx_spectrum); // retrieve complex spec from polar coordinates
 
-    unsigned int frame_step = (framelen * (1 - overlap)); // (1 - overlap) is the segment shift
-    //std::cout << frame_step << std::endl;
-    unsigned int num_segments = cx_spectrum.n_cols;
-    unsigned int padded_len = (num_segments-1)*frame_step + framelen;
-
     umat indices = repmat(linspace<uvec>(0, framelen - 1, framelen), 1, num_segments)
     + repmat(linspace<urowvec>(0, padded_len-framelen, num_segments), framelen, 1);
 
@@ -195,7 +191,7 @@ void WaveProcessor::runSynthesis2(const arma::mat &spc, arma::vec &outWave) {
 
     }
     outWave = signal / correction;
-    //outWave = outWave.rows(0, wave.n_elem);
+    outWave = outWave.rows(0, original_len - 1);
 }
 
 const arma::mat & WaveProcessor::getSpectrum() const {

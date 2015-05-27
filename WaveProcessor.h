@@ -27,6 +27,10 @@ private:
     unsigned int framelen;
     unsigned int nfft;
     float overlap;
+    unsigned int frame_step;
+    unsigned int num_segments;
+    unsigned int padded_len;
+    unsigned int original_len;
 
     arma::vec window;
     arma::mat spectrum;
