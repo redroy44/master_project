@@ -15,7 +15,7 @@
 
 class Wave {
 public:
-	Wave(const std::string &in, const std::string &out, const int &samplerate, const int &channels);
+	Wave(const std::string &in, const std::string &out, const int &samplerate, const int &channels, const bool &ss);
 	virtual ~Wave();
 
     void read();
@@ -27,6 +27,7 @@ private:
 	int samplerate;
 	int format;
 	int channels;
+    bool spec_sub;
 
     WaveProcessor waveProcessor;
 

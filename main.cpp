@@ -23,7 +23,8 @@ po::variables_map parseArgs(int argc, char *argv[])
 		("inputfile,i", po::value<string>()->required(), "Input file path")
 		("outputfile,o", po::value<string>()->required(), "Output file path")
 		("samplerate,s", po::value<int>()->default_value(16), "Inputfile samplerate in kHz")
-		("channels,c", po::value<int>()->default_value(1), "Number of channels");
+		("channels,c", po::value<int>()->default_value(1), "Number of channels")
+		("spec_sub,j", po::value<bool>()->default_value(false), "Use julius-like speech denoising");
 
     po::variables_map vm;
 	try {
@@ -55,7 +56,8 @@ int main(int argc, char *argv[])
 	Wave wave(vm["inputfile"].as<string>(),
               vm["outputfile"].as<string>(),
               vm["samplerate"].as<int>(),
-              vm["channels"].as<int>());
+              vm["channels"].as<int>(),
+              vm["spec_sub"].as<bool>());
 
     wave.read();
     wave.process();
