@@ -29,7 +29,7 @@ NoiseEstimator::NoiseEstimator(const unsigned int &nfft, const unsigned int &sr)
 
 	//initialize delta eq(10.5)
 	for (unsigned int i = bin3k; i < length; i++) {
-		delta(i) = 5;
+		delta(i) = 10;
 	}
 }
 

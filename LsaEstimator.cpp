@@ -12,13 +12,13 @@
 using namespace arma;
 
 LsaEstimator::LsaEstimator(const unsigned int &nfft) {
-	alpha = 0.98;
+	alpha = 0.998;
 
-	gainLower = -60;
-	gainUpper = 6;
+	gainLower = -15;
+	gainUpper = 2;
 
-	prioriLower = -30;
-	prioriUpper = 60;
+	prioriLower = -15;
+	prioriUpper = 15;
 
 	int length = nfft/2;
 
