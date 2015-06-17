@@ -8,6 +8,7 @@
 #include "Wave.h"
 #include "NoiseEstimator.h"
 #include "LsaEstimator.h"
+#include "SpecSubEstimator.h"
 #include "sndfile.hh"
 #include <armadillo>
 #include <stdexcept>
@@ -17,11 +18,13 @@ using namespace arma;
 // define static members
 const int Wave::BUFFER_LEN = 1024;
 
-Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch) : waveProcessor() {
+Wave::Wave(const std::string &in, const std::string &out, const int &sr, const int &ch, const bool &ss) : waveProcessor() {
     inputfile = in;
     outputfile = out;
 	samplerate = sr*1000; // the only change needed to 8/16kHz change
     channels = ch;
+    spec_sub = ss;
+    noiseLen = 300;
 }
 
 Wave::~Wave() {
@@ -38,20 +41,36 @@ void Wave::process() {
 	cout << "processing wave...\n";
     outSpectrum.copy_size(inSpectrum);
 
-    NoiseEstimator noiseEstimator(waveProcessor.getNfft(), samplerate);
-    LsaEstimator lsaEstimator(waveProcessor.getNfft());
-    // TODO implement an col_iterator
-    for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
-        vec powerSpec = square(waveProcessor.getSpectrum().col(i));
-        if (i == 0) {
-            noiseEstimator.init(powerSpec);
-        }
-        else {
-            noiseEstimator.estimateNoise(powerSpec);
-        }
-        lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
-        outSpectrum.col(i) = lsaEstimator.getCleanSpectrum();
+    if (!spec_sub) {
+        NoiseEstimator noiseEstimator(waveProcessor.getNfft(), samplerate);
+        LsaEstimator lsaEstimator(waveProcessor.getNfft());
+        // TODO implement an col_iterator
+        for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
+            vec powerSpec = square(waveProcessor.getSpectrum().col(i));
+            if (i == 0) {
+                noiseEstimator.init(powerSpec);
+            }
+            else {
+                noiseEstimator.estimateNoise(powerSpec);
+            }
+            lsaEstimator.estimateSpec(powerSpec, noiseEstimator.getNoiseSpectrum());
+            outSpectrum.col(i) = lsaEstimator.getCleanSpectrum();
 
+        }
+    } else {
+        std::cout << "using julius spectral subtraction" << std::endl;
+        SpecSubEstimator ssEstimator(waveProcessor.getNfft());
+        // estimate Noise
+        int num = (int)((samplerate*noiseLen/1000.0 - waveProcessor.getFramelen()) / waveProcessor.getFrameshift()) + 1;
+
+        std::cout << num << std::endl;
+
+        ssEstimator.estimateNoise(waveProcessor.getSpectrum().cols(0, num));
+        // main loop
+        for (unsigned int i = 0; i < waveProcessor.getSpectrum().n_cols; i++) {
+            ssEstimator.estimateSpec(waveProcessor.getSpectrum().col(i));
+            outSpectrum.col(i) = ssEstimator.getCleanSpectrum();
+        }
     }
 }
 

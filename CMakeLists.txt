@@ -21,6 +21,7 @@ set(SOURCES
     WaveProcessor.cpp
     NoiseEstimator.cpp
     LsaEstimator.cpp
+    SpecSubEstimator.cpp
 )
 
 set(HEADERS
@@ -28,7 +29,7 @@ set(HEADERS
     WaveProcessor.h
     NoiseEstimator.h
     LsaEstimator.h
-
+    SpecSubEstimator.h
 )
 MESSAGE( SOURCES ": " ${SOURCES} )
 MESSAGE( HEADERS ": " ${HEADERS} )

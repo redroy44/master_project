@@ -24,7 +24,7 @@ po::variables_map parseArgs(int argc, char *argv[])
 		("outputfile,o", po::value<string>()->required(), "Output file path")
 		("samplerate,s", po::value<int>()->default_value(16), "Inputfile samplerate in kHz")
 		("channels,c", po::value<int>()->default_value(1), "Number of channels")
-		("spec_sub,j", po::value<bool>()->default_value(false), "Use julius-like speech denoising");
+		("spec_sub,j", po::bool_switch(), "Use julius-like speech denoising");
 
     po::variables_map vm;
 	try {

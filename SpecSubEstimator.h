@@ -8,7 +8,7 @@ public:
     SpecSubEstimator(const unsigned int &nfft);
     virtual ~SpecSubEstimator();
 
-    void estimateSpec(const arma::vec &, const arma::vec &);
+    void estimateSpec(const arma::vec &);
     void estimateNoise(const arma::mat &);
 	arma::vec getCleanSpectrum(void) const;
 	//arma::vec getNoiseEstimate(void) const;
@@ -16,8 +16,9 @@ public:
 private:
     float ssAlpha;
     float ssFloor;
+    int noiseLen;
 
     arma::vec cleanSpectrum;
     arma::vec noise;
-}
+};
 #endif

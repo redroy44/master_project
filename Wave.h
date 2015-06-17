@@ -28,6 +28,7 @@ private:
 	int format;
 	int channels;
     bool spec_sub;
+    int noiseLen;
 
     WaveProcessor waveProcessor;
 

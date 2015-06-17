@@ -201,3 +201,11 @@ const arma::mat & WaveProcessor::getSpectrum() const {
 const unsigned int & WaveProcessor::getNfft() const {
     return nfft;
 }
+
+const unsigned int & WaveProcessor::getFramelen() const {
+    return framelen;
+}
+
+const unsigned int WaveProcessor::getFrameshift() const {
+    return static_cast<unsigned int>(framelen * (1 - overlap));
+}
