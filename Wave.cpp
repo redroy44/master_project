@@ -61,9 +61,7 @@ void Wave::process() {
         std::cout << "using julius spectral subtraction" << std::endl;
         SpecSubEstimator ssEstimator(waveProcessor.getNfft());
         // estimate Noise
-        int num = (int)((samplerate*noiseLen/1000.0 - waveProcessor.getFramelen()) / waveProcessor.getFrameshift()) + 1;
-
-        std::cout << num << std::endl;
+        int num = (int)(samplerate*noiseLen/1000.0/waveProcessor.getFrameshift());
 
         ssEstimator.estimateNoise(waveProcessor.getSpectrum().cols(0, num));
         // main loop

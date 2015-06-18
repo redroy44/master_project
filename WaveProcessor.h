@@ -22,7 +22,6 @@ public:
     const arma::mat & getSpectrum(void) const;
     const unsigned int & getNfft(void) const;
 
-    const unsigned int & getFramelen(void) const;
     const unsigned int getFrameshift(void) const;
 
 private:
