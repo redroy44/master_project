@@ -59,6 +59,11 @@ int main(int argc, char *argv[])
               vm["channels"].as<int>(),
               vm["spec_sub"].as<bool>());
 
+    std::string ss = vm["spec_sub"].as<bool>() ? "on" : "off";
+    std::cout << "Julius-like spectral subtraction turned " << ss << std::endl;
+
+    exit(EXIT_FAILURE);
+
     wave.read();
     wave.process();
     wave.save();
